@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
 import { socket } from './socket';
+import { getRandomUsername } from './utils/randomUsername';
 
 
 function App() {
   
   useEffect(() => {
+    socket.auth = { username: getRandomUsername() };
     socket.connect();
     socket.on('connect', () => {
       console.log(socket.id + ' connected');
