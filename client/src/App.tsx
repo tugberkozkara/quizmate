@@ -1,6 +1,11 @@
 import { useEffect } from 'react';
+import {Routes, Route} from 'react-router-dom';
+
 import { socket } from './socket';
 import { getRandomUsername } from './utils/randomUsername';
+
+import NavBar from './components/NavBar';
+import Homepage from './pages/Homepage';
 
 
 function App() {
@@ -20,7 +25,11 @@ function App() {
   }, []);
   
   return (
-    <div className="app">
+    <div>
+      <NavBar />
+      <Routes>
+        <Route path="/" element={<Homepage />} />
+      </Routes>
     </div>
   );
 }
