@@ -2,24 +2,25 @@ import express from "express";
 import http from "http";
 import { Server } from "socket.io";
 
-import { Player } from "./player/player";
+import { Platform } from "./platform/platform";
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {cors: {origin: 'http://localhost:3000',}});
 const port = 5000;
 
-io.on('connection', (socket) => {
-    console.log(socket.id + " connected");
+const platform = new Platform();
 
-    for(let [id, socket] of io.of("/").sockets) {
-        const player = new Player(id, socket.handshake.auth.username);
-        Player.addPlayer(player);
-    }
+io.on('connection', (socket) => {
+
+    platform.addPlayer(io);
+
+    socket.on('create-room', () => {
+        platform.createRoom(socket);
+    });
 
     socket.on('disconnect', () => {
-        console.log(socket.id + " disconnected");
-        Player.removePlayer(socket.id);
+        platform.removePlayer(socket.id);
     });
 });
 
