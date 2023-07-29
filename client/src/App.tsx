@@ -13,12 +13,7 @@ function App() {
   useEffect(() => {
     socket.auth = { username: getRandomUsername() };
     socket.connect();
-    socket.on('connect', () => {
-      console.log(socket.id + ' connected');
-    });
-    socket.on('disconnect', () => {
-      console.log(socket.id + ' disconnected');
-    });
+    
     return () => {
       socket.disconnect();
     };
