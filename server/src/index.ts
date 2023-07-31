@@ -3,6 +3,7 @@ import http from "http";
 import { Server } from "socket.io";
 
 import { Platform } from "./platform/platform";
+import { socketRouter } from "./routers/socketRouter";
 
 const app = express();
 const server = http.createServer(app);
@@ -12,16 +13,11 @@ const port = 5000;
 const platform = new Platform();
 
 io.on('connection', (socket) => {
+    
+    platform.addPlayer(socket);
 
-    platform.addPlayer(io);
+    socketRouter(socket, platform);
 
-    socket.on('create-room', () => {
-        platform.createRoom(socket);
-    });
-
-    socket.on('disconnect', () => {
-        platform.removePlayer(socket.id);
-    });
 });
 
 
