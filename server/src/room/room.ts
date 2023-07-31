@@ -1,5 +1,4 @@
 import { Player } from "../player/player";
-import { Platform } from "../platform/platform";
 
 
 export class Room {
@@ -8,9 +7,9 @@ export class Room {
     players: Player[];
     capacity: number;
 
-    constructor(platform: Platform, socket: any) {
+    constructor(creatorPlayer: Player) {
         this.id = Math.floor(Math.random() * (999999 - 100000) + 100000).toString();
-        this.creatorPlayer = platform.getPlayerById(socket.id);
+        this.creatorPlayer = creatorPlayer;
         this.players = [this.creatorPlayer,];
         this.capacity = 2;
     }
