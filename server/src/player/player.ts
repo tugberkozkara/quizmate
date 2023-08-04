@@ -20,7 +20,7 @@ export class Player {
 
     joinRoom(platform: Platform, roomId: string): Room | null {
         const room = platform.rooms.filter(e => e.id === roomId)[0];
-        if (room.players.length < room.capacity) {
+        if (room.players.length < room.playerCapacity) {
             room.addPlayer(this);
             return room;
         }
