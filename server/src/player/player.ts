@@ -26,6 +26,12 @@ export class Player {
         }
         return null;
     }
+
+    leaveRoom(platform: Platform, roomId: string): void {
+        const room = platform.rooms.filter(e => e.id === roomId)[0];
+        room.removePlayer(this);
+    }
+    
 }
 
 

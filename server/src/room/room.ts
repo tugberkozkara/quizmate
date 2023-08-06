@@ -22,4 +22,21 @@ export class Room {
         }
     }
 
+    removePlayer(player: Player): void {
+        if (this.players.filter(e => e.id === player.id).length > 0) {
+            this.players = this.players.filter(e => e.id !== player.id);
+        }
+    }
+
+    addCategory(category: string): void {
+        if (this.categories.length < this.playerCapacity) {
+            this.categories.push(category);
+        }
+    }
+
+    startGame(): void {
+        console.log("Game started");
+    }
+
+
 }
