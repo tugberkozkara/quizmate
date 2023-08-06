@@ -12,6 +12,15 @@ socket.on('disconnect', () => {
 });
 
 socket.on("room-created", (room: any) => {
-    console.log(room);
+    console.log(room.id + "room-created");
 });
+
+socket.on("room-is-full", () => {
+    console.log("room-is-full");
+});
+
+socket.on("room-joined", (room: any) => {
+    console.log(room.id + "room-joined");
+});
+
 

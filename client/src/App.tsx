@@ -6,6 +6,7 @@ import { getRandomUsername } from './utils/randomUsername';
 
 import NavBar from './components/NavBar';
 import Homepage from './pages/Homepage';
+import Room from './pages/Room';
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
       <NavBar />
       <Routes>
         <Route path="/" element={<Homepage />} />
+        <Route path="/room/:roomId" element={<Room />} />
       </Routes>
     </div>
   );
