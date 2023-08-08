@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {Routes, Route} from 'react-router-dom';
 
 import { socket } from './socket';
@@ -10,11 +10,14 @@ import Room from './pages/Room';
 
 
 function App() {
-  
+  const [username, setUsername] = useState('');
+
   useEffect(() => {
     socket.auth = { username: getRandomUsername() };
     socket.connect();
     
+    setUsername(socket.auth.username);
+
     return () => {
       socket.disconnect();
     };
@@ -24,7 +27,7 @@ function App() {
     <div>
       <NavBar />
       <Routes>
-        <Route path="/" element={<Homepage />} />
+        <Route path="/" element={<Homepage username={ username }/>} />
         <Route path="/room/:roomId" element={<Room />} />
       </Routes>
     </div>
