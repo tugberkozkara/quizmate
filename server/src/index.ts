@@ -13,11 +13,8 @@ const port = 5000;
 const platform = new Platform();
 
 io.on('connection', (socket) => {
-    
     platform.addPlayer(socket);
-
-    socketRouter(socket, platform);
-
+    socketRouter(io, socket, platform);
 });
 
 

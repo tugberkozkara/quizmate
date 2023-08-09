@@ -11,18 +11,18 @@ export class socketController {
         socket.emit("room-created", room);
     }
 
-    static joinRoom = (socket: any, platform: Platform, roomId: string) => {
+    static joinRoom = (io: any, socket: any, platform: Platform, roomId: string) => {
         const player: Player = platform.players.filter(e => e.id === socket.id)[0];
         const room: Room | null = player.joinRoom(platform, roomId);
         if (room){
             socket.join(room.id);
-            socket.emit("room-joined", room);
+            io.to(room.id).emit("room-joined", room);
         }else{
             socket.emit("room-is-full");
         }
     }
 
-    static leaveRoom = (socket: any, platform: Platform, roomId: string) => {
+    static leaveRoom = (io: any, socket: any, platform: Platform, roomId: string) => {
         const player: Player = platform.players.filter(e => e.id === socket.id)[0];
         const room: Room = platform.rooms.filter(e => e.id === roomId)[0];
         player.leaveRoom(platform, room.id);
@@ -30,15 +30,15 @@ export class socketController {
         socket.emit("room-left");
     }
 
-    static startGame = (socket: any, platform: Platform, roomId: string, category: string) => {
+    static startGame = (io: any, socket: any, platform: Platform, roomId: string, category: string) => {
         const room: Room = platform.rooms.filter(e => e.id === roomId)[0];
         room.addCategory(category);
         if(room.categories.length < room.playerCapacity){
-            socket.emit("waiting-for-players");
+            socket.emit("waiting-for-players", room);
             return;
         }
         room.startGame();
-        socket.emit("game-started", room);
+        io.to(room.id).emit("game-started", room);
     }
 
     static removePlayer = (socket: any, platform: Platform) => {
