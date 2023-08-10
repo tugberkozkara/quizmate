@@ -42,11 +42,9 @@ export default function Homepage({ username }: { username: string }) {
 
   return (
     <section className="text-center col col-lg-3 col-md-4 col-sm-6 col-6 mx-auto">
-      <p>
-        <h1 className="h3 mb-3 fw-normal">Welcome {username}</h1>
-      </p>
+      <h1 className="h3 mb-3 fw-normal">Welcome {username}</h1>
 
-    <form onSubmit={joinRoomHandler}>
+      <form onSubmit={joinRoomHandler}>
         <div className="input-group mb-3">
           <input type="text" className="form-control" placeholder="Enter room id" name="room-id" value={roomId} onChange={roomIdHandler}></input>
         </div>
