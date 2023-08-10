@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { socket } from "../socket";
 
 export default function Room() {
     const params = useParams();
     const roomId = params.roomId;
-    
+
+    const {state} = useLocation();
+    const [roomPlayers, setRoomPlayers] = useState(state.room.players || []);
+    const [roomCategories, setRoomCategories] = useState(state.room.categories || []);
     const [category, setCategory] = useState('');
     const navigate = useNavigate();
 
@@ -17,8 +20,8 @@ export default function Room() {
 
     const startGameHandler = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setRoomCategories([...roomCategories, category]);
         socket.emit('start-game', roomId, category);
-        console.log('start game '+ roomId + ' ' + category);        
     }
 
     // Leave the room
@@ -31,16 +34,26 @@ export default function Room() {
             console.log('room left');
             navigate(`/`);
         })
+
+        socket.on('room-joined', (room: any) => {
+            setRoomPlayers(room.players);
+            setRoomCategories(room.categories);
+            console.log('room joined');
+        })
         
-        socket.on('waiting-for-players', () => {
-            console.log('waiting for players');
+        socket.on('waiting-for-players', (room: any) => {
+            setRoomPlayers(room.players);
+            setRoomCategories(room.categories);
+            console.log('waiting for players in room ' + room.id);
         })
 
         socket.on('game-started', (room: any) => {
-            console.log('game started in room '+room.id);
+            setRoomPlayers(room.players);
+            setRoomCategories(room.categories);
+            console.log('game started in room '+ room.id);
         })
 
-    }, []);
+    }, [navigate]);
     
 
   return (
@@ -60,6 +73,17 @@ export default function Room() {
             <p className='mb-0'>
                 <button className="btn btn-outline-primary my-2" onClick={leaveRoomHandler}>Leave the room</button>
             </p>
+
+            <p className='mb-0 mt-5'>players: </p>
+            {roomPlayers.map((player: any, i:any) => (
+                <p className='mb-0' key={i}>{player.username}</p>
+            ))}
+
+            <p className='mb-0 mt-5'>categories: </p>
+            {roomCategories.map((cat: string, i:any) => (
+                <p className='mb-0' key={i}>{cat}</p>
+            ))}
+
         </section>
     </>
   )
