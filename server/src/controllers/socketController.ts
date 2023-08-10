@@ -34,7 +34,7 @@ export class socketController {
         const room: Room = platform.rooms.filter(e => e.id === roomId)[0];
         room.addCategory(category);
         if(room.categories.length < room.playerCapacity){
-            socket.emit("waiting-for-players", room);
+            io.to(room.id).emit("waiting-for-players", room);
             return;
         }
         room.startGame();
