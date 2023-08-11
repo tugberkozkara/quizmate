@@ -7,6 +7,7 @@ import { getRandomUsername } from './utils/randomUsername';
 import NavBar from './components/NavBar';
 import Homepage from './pages/Homepage';
 import Room from './pages/Room';
+import Game from './pages/Game';
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Homepage username={ username }/>} />
         <Route path="/room/:roomId" element={<Room />} />
+        <Route path="/game/:roomId" element={<Game />} />
       </Routes>
     </div>
   );
