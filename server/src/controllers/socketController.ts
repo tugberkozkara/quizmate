@@ -1,6 +1,7 @@
 import { Platform } from "../platform/platform";
 import { Player } from "../player/player";
 import { Room } from "../room/room";
+import { Game } from "../game/game";
 
 export class socketController {
 
@@ -37,8 +38,8 @@ export class socketController {
             io.to(room.id).emit("waiting-for-players", room);
             return;
         }
-        room.startGame();
-        io.to(room.id).emit("game-started", room);
+        const game: Game = room.startGame();
+        io.to(room.id).emit("game-started", room, game);
     }
 
     static removePlayer = (socket: any, platform: Platform) => {

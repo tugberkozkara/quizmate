@@ -1,4 +1,5 @@
 import { Player } from "../player/player";
+import { Game } from "../game/game";
 
 
 export class Room {
@@ -7,6 +8,7 @@ export class Room {
     playerCapacity: number;
     players: Player[];
     categories: string[];
+    games: string[];
 
     constructor(creatorPlayer: Player) {
         this.id = Math.floor(Math.random() * (999999 - 100000) + 100000).toString();
@@ -14,6 +16,7 @@ export class Room {
         this.players = [this.creatorPlayer,];
         this.playerCapacity = 2;
         this.categories = [];
+        this.games = [];
     }
 
     addPlayer(player: Player): void {
@@ -34,9 +37,9 @@ export class Room {
         }
     }
 
-    startGame(): void {
-        console.log("Game started");
+    startGame(): Game {
+        const game: Game = new Game(this.id, this.players, this.categories);
+        this.games.push(game.id);
+        return game;
     }
-
-
 }
