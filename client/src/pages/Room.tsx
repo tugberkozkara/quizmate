@@ -47,10 +47,11 @@ export default function Room() {
             console.log('waiting for players in room ' + room.id);
         })
 
-        socket.on('game-started', (room: any) => {
+        socket.on('game-started', (room: any, game: any) => {
             setRoomPlayers(room.players);
             setRoomCategories(room.categories);
             console.log('game started in room '+ room.id);
+            navigate(`/game/${room.id}`, { state: { room: room, game: game }});
         })
 
     }, [navigate]);
@@ -75,15 +76,15 @@ export default function Room() {
             </p>
 
             <p className='mb-0 mt-5'>players: </p>
-            {roomPlayers.map((player: any, i:any) => (
+            {roomPlayers.map((player: any, i: any) => (
                 <p className='mb-0' key={i}>{player.username}</p>
             ))}
 
             <p className='mb-0 mt-5'>categories: </p>
-            {roomCategories.map((cat: string, i:any) => (
+            {roomCategories.map((cat: string, i: any) => (
                 <p className='mb-0' key={i}>{cat}</p>
             ))}
-
+            
         </section>
     </>
   )
