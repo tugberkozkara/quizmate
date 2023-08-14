@@ -28,7 +28,7 @@ export class socketController {
         const room: Room = platform.rooms.filter(e => e.id === roomId)[0];
         player.leaveRoom(platform, room.id);
         socket.leave(room.id);
-        socket.emit("room-left");
+        io.to(room.id).emit("room-left", room, player);
     }
 
     static startGame = (io: any, socket: any, platform: Platform, roomId: string, category: string) => {

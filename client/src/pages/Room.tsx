@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { socket } from "../socket";
 
-export default function Room() {
+export default function Room({ selfUsername }: { selfUsername: string }) {
     const params = useParams();
     const roomId = params.roomId;
 
@@ -27,12 +27,14 @@ export default function Room() {
     // Leave the room
     const leaveRoomHandler = () => {
         socket.emit('leave-room', roomId);
+        navigate(`/`);
     }
 
     useEffect(() => {
-        socket.on('room-left', () => {
-            console.log('room left');
-            navigate(`/`);
+        socket.on('room-left', (room: any, player: any) => {
+            setRoomPlayers(room.players);
+            setRoomCategories(room.categories);
+            console.log(player.username +' left the room');
         })
 
         socket.on('room-joined', (room: any) => {
@@ -77,6 +79,9 @@ export default function Room() {
 
             <p className='mb-0 mt-5'>players: </p>
             {roomPlayers.map((player: any, i: any) => (
+                player.username === selfUsername ?
+                <p className='mb-0 text-primary' key={i}>{player.username}</p>
+                :
                 <p className='mb-0' key={i}>{player.username}</p>
             ))}
 
