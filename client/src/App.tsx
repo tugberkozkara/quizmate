@@ -11,13 +11,13 @@ import Game from './pages/Game';
 
 
 function App() {
-  const [username, setUsername] = useState('');
+  const [selfUsername, setSelfUsername] = useState('');
 
   useEffect(() => {
     socket.auth = { username: getRandomUsername() };
     socket.connect();
     
-    setUsername(socket.auth.username);
+    setSelfUsername(socket.auth.username);
 
     return () => {
       socket.disconnect();
@@ -28,8 +28,8 @@ function App() {
     <div>
       <NavBar />
       <Routes>
-        <Route path="/" element={<Homepage username={ username }/>} />
-        <Route path="/room/:roomId" element={<Room />} />
+        <Route path="/" element={<Homepage selfUsername={ selfUsername }/>} />
+        <Route path="/room/:roomId" element={<Room selfUsername={ selfUsername }/>} />
         <Route path="/game/:roomId" element={<Game />} />
       </Routes>
     </div>

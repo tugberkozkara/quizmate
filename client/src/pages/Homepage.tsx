@@ -3,7 +3,7 @@ import { socket } from "../socket";
 import { useNavigate } from 'react-router-dom';
 
 
-export default function Homepage({ username }: { username: string }) {
+export default function Homepage({ selfUsername }: { selfUsername: string }) {
 
   const [roomId, setRoomId] = useState('');
   const navigate = useNavigate();
@@ -42,7 +42,7 @@ export default function Homepage({ username }: { username: string }) {
 
   return (
     <section className="text-center col col-lg-3 col-md-4 col-sm-6 col-6 mx-auto">
-      <h1 className="h3 mb-3 fw-normal">Welcome {username}</h1>
+      <h1 className="h3 mb-3 fw-normal">Welcome {selfUsername}</h1>
 
       <form onSubmit={joinRoomHandler}>
         <div className="input-group mb-3">
