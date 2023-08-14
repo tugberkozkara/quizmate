@@ -31,9 +31,14 @@ export class socketController {
         io.to(room.id).emit("room-left", room, player);
     }
 
-    static startGame = (io: any, socket: any, platform: Platform, roomId: string, category: string) => {
+    static addCategory = (io: any, socket: any, platform: Platform, roomId: string, category: string) => {
         const room: Room = platform.rooms.filter(e => e.id === roomId)[0];
         room.addCategory(category);
+        io.to(room.id).emit("category-added", room);
+    }
+
+    static startGame = (io: any, socket: any, platform: Platform, roomId: string) => {
+        const room: Room = platform.rooms.filter(e => e.id === roomId)[0];
         if(room.categories.length < room.playerCapacity){
             io.to(room.id).emit("waiting-for-players", room);
             return;
