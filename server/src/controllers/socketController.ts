@@ -38,8 +38,10 @@ export class socketController {
     }
 
     static startGame = (io: any, socket: any, platform: Platform, roomId: string) => {
+        const player: Player = platform.players.filter(e => e.id === socket.id)[0];
         const room: Room = platform.rooms.filter(e => e.id === roomId)[0];
-        if(room.categories.length < room.playerCapacity){
+        room.addActivePlayer(player);
+        if(room.activePlayers.length < room.playerCapacity){
             io.to(room.id).emit("waiting-for-players", room);
             return;
         }
