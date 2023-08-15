@@ -22,8 +22,8 @@ export default function Room({ selfUsername }: { selfUsername: string }) {
         e.preventDefault();
         setRoomCategories([...roomCategories, category]);
         socket.emit('add-category', roomId, category);
-        document.getElementById('start-game-button')!.removeAttribute('disabled');
-        document.getElementById('add-category-button')!.setAttribute('disabled', 'true');
+        document.getElementById('start-game-button')?.classList.remove('disabled');
+        document.getElementById('add-category-button')?.classList.add('disabled');
     }
 
     const startGame = () => {
@@ -48,6 +48,12 @@ export default function Room({ selfUsername }: { selfUsername: string }) {
             setRoomCategories(room.categories);
             console.log('room joined');
         })
+
+        socket.on('category-added', (room: any) => {
+            setRoomPlayers(room.players);
+            setRoomCategories(room.categories);
+            console.log('category added');
+        })
         
         socket.on('waiting-for-players', (room: any) => {
             setRoomPlayers(room.players);
@@ -59,7 +65,7 @@ export default function Room({ selfUsername }: { selfUsername: string }) {
             setRoomPlayers(room.players);
             setRoomCategories(room.categories);
             console.log('game started in room '+ room.id);
-            navigate(`/game/${room.id}`, { state: { room: room, game: game }});
+            navigate(`/game/${game.id}`, { state: { room: room, game: game }});
         })
 
     }, [navigate]);
@@ -78,8 +84,9 @@ export default function Room({ selfUsername }: { selfUsername: string }) {
                     <button id="add-category-button" className="btn btn-outline-dark my-2" type='submit'>Add category</button>
                 </p>
             </form>
+
             <p className='mb-0'>
-                <button id="start-game-button" className="btn btn-primary my-2" disabled={true} onClick={startGame}>Start Game</button>
+                <button id="start-game-button" className="btn btn-primary my-2 disabled" onClick={startGame}>Start Game</button>
             </p>
 
             <p className='mb-0'>or</p>
