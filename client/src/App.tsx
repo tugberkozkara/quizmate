@@ -30,7 +30,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Homepage selfUsername={ selfUsername }/>} />
         <Route path="/room/:roomId" element={<Room selfUsername={ selfUsername }/>} />
-        <Route path="/game/:roomId" element={<Game />} />
+        <Route path="/game/:gameId" element={<Game />} />
       </Routes>
     </div>
   );
