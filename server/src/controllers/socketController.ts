@@ -49,6 +49,19 @@ export class socketController {
         io.to(room.id).emit("game-started", room, game);
     }
 
+    static finishGame = (io: any, socket: any, platform: Platform, roomId: string, gameId: string, selfAnswers: any) => {
+        const player: Player = platform.players.filter(e => e.id === socket.id)[0];
+        const room: Room = platform.rooms.filter(e => e.id === roomId)[0];
+        const game: Game = room.games.filter(e => e.id === gameId)[0];
+        game.addPlayerAnswers(player, selfAnswers);
+        room.removeActivePlayer(player);
+        if(room.activePlayers.length > 0){
+            io.to(room.id).emit("waiting-for-players", room);
+            return;
+        }
+        io.to(room.id).emit("game-finished", room, game.playerScores);
+    }
+
     static removePlayer = (socket: any, platform: Platform) => {
         const player: Player = platform.players.filter(e => e.id === socket.id)[0];
         platform.removePlayer(player);

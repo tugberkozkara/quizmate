@@ -56,4 +56,10 @@ export class Room {
         this.games.push(game);
         return game;
     }
+
+    finishGame(game: Game): void {
+        if (this.games.filter(e => e.id === game.id).length > 0) {
+            this.games = this.games.filter(e => e.id !== game.id);
+        }
+    }
 }
