@@ -1,3 +1,4 @@
+import { Platform } from "../platform/platform";
 import { Player } from "../player/player";
 import { Game } from "../game/game";
 
@@ -11,8 +12,11 @@ export class Room {
     categories: string[];
     games: Game[];
 
-    constructor(creatorPlayer: Player) {
-        this.id = Math.floor(Math.random() * (999999 - 100000) + 100000).toString();
+    constructor(platform: Platform, creatorPlayer: Player) {
+        this.id = Math.floor(Math.random() * (9999 - 1000) + 1000).toString();
+        while (platform.rooms.filter(e => e.id === this.id).length > 0) {
+            this.id = Math.floor(Math.random() * (9999 - 1000) + 1000).toString();
+        }
         this.creatorPlayer = creatorPlayer;
         this.players = [this.creatorPlayer,];
         this.activePlayers = [];
@@ -52,7 +56,7 @@ export class Room {
     }
 
     startGame(): Game {
-        const game: Game = new Game(this.id, this.players, this.categories);
+        const game: Game = new Game(this, this.players, this.categories);
         this.games.push(game);
         return game;
     }

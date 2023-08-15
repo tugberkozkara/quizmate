@@ -11,10 +11,8 @@ export class Player {
     }
 
     createRoom(platform: Platform): Room {
-        const room = new Room(this);
-        if (platform.rooms.filter(e => e.id === room.id).length === 0) {
-            platform.addRoom(room);
-        }
+        const room = new Room(platform, this);
+        platform.addRoom(room);
         return room;
     }
 
