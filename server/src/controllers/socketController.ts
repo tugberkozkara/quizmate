@@ -59,7 +59,7 @@ export class socketController {
             io.to(room.id).emit("waiting-for-players", room);
             return;
         }
-        io.to(room.id).emit("game-finished", room, game.playerScores);
+        io.to(room.id).emit("game-finished", room, game);
     }
 
     static removePlayer = (socket: any, platform: Platform) => {
