@@ -1,9 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { QuestionCard } from '../components/QuestionCard';
 import { socket } from "../socket";
 
-export default function Game() {
+export default function Game({ selfUsername }: { selfUsername: string }) {
 
     type question = {
         id: number,
@@ -20,12 +20,15 @@ export default function Game() {
     const {state} = useLocation();
     const room = state.room;
     const game = state.game;
+    const waitingForPlayersAlert = state.waitingForPlayersAlert;
+    const setWaitingForPlayersAlert = state.setWaitingForPlayersAlert;
+    const roomLeftUser = state.roomLeftUser;
+    const setRoomLeftUser = state.setRoomLeftUser;
     const questions: question[] = game.questions;
     const selfAnswers: selfAnswer[] = [];
     const navigate = useNavigate();
     
     const finishGame = () => {
-        console.log('finish game');
         socket.emit('finish-game', room.id, game.id, selfAnswers);
     }
 
@@ -35,21 +38,50 @@ export default function Game() {
     }
 
     useEffect(() => {
-        socket.on('waiting-for-players', (room: any) => {
-            console.log('waiting for players in room ' + room.id);
+        socket.on('room-left', (room: any, player: any) => {
+            setRoomLeftUser(player.username);
         })
 
-        socket.on('game-finished', (room: any, gameScore: any) => {
-            console.log('game finished');
-            console.log(gameScore);
+        socket.on('waiting-for-players', (room: any) => {
+            setWaitingForPlayersAlert(true);
         })
-    }, [])
+
+        socket.on('game-finished', (room: any, game: any) => {
+            navigate(`/result/${game.id}`, 
+            {
+                state: {
+                    room: room,
+                    gameScore: game.playerScores,
+                    roomLeftUser: roomLeftUser,
+                    setRoomLeftUser: setRoomLeftUser 
+                }
+            });
+        })
+    }, [navigate])
     
 
   return (
     <>
         <section className="text-center col col-lg-6 col-md-6 col-sm-10 col-10 mx-auto">
             <div>Game {game.id}</div>
+
+            <div className="container mb-0 mt-5">
+                {waitingForPlayersAlert &&
+                    <div className="alert alert-warning" role="alert">
+                        <h4 className="alert-heading">Waiting for players</h4>
+                        <p>Waiting for other players to finish the game...</p>
+                    </div>
+                }
+            </div>
+
+            <div className="container mb-0 mt-5">
+                {roomLeftUser &&
+                    <div className="alert alert-warning" role="alert">
+                        <h4 className="alert-heading">Room left</h4>
+                        <p>{roomLeftUser} left the room</p>
+                    </div>
+                }
+            </div>
 
             <div id="carouselExample" className="carousel slide">
                 <div className="carousel-inner">

@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { socket } from "../socket";
 
 export default function Room({ selfUsername }: { selfUsername: string }) {
-    const params = useParams();
-    const roomId = params.roomId;
-
     const {state} = useLocation();
-    const [roomPlayers, setRoomPlayers] = useState(state.room.players || []);
-    const [roomCategories, setRoomCategories] = useState(state.room.categories || []);
+    const room = state.room;
+
+    const [roomPlayers, setRoomPlayers] = useState(room.players || []);
+    const [roomCategories, setRoomCategories] = useState(room.categories || []);
     const [category, setCategory] = useState('');
+    const [waitingForPlayersAlert, setWaitingForPlayersAlert] = useState(false);
+    const [roomLeftUser, setRoomLeftUser] = useState('');
     const navigate = useNavigate();
 
 
@@ -21,18 +22,18 @@ export default function Room({ selfUsername }: { selfUsername: string }) {
     const addCategory = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setRoomCategories([...roomCategories, category]);
-        socket.emit('add-category', roomId, category);
+        socket.emit('add-category', room.id, category);
         document.getElementById('start-game-button')?.classList.remove('disabled');
         document.getElementById('add-category-button')?.classList.add('disabled');
     }
 
     const startGame = () => {
-        socket.emit('start-game', roomId);
+        socket.emit('start-game', room.id);
     }
 
     // Leave the room
     const leaveRoom = () => {
-        socket.emit('leave-room', roomId);
+        socket.emit('leave-room', room.id);
         navigate(`/`);
     }
 
@@ -40,32 +41,41 @@ export default function Room({ selfUsername }: { selfUsername: string }) {
         socket.on('room-left', (room: any, player: any) => {
             setRoomPlayers(room.players);
             setRoomCategories(room.categories);
-            console.log(player.username +' left the room');
+            setRoomLeftUser(player.username);
         })
 
         socket.on('room-joined', (room: any) => {
             setRoomPlayers(room.players);
             setRoomCategories(room.categories);
-            console.log('room joined');
+            setRoomLeftUser('');
         })
 
         socket.on('category-added', (room: any) => {
             setRoomPlayers(room.players);
             setRoomCategories(room.categories);
-            console.log('category added');
         })
         
         socket.on('waiting-for-players', (room: any) => {
             setRoomPlayers(room.players);
             setRoomCategories(room.categories);
-            console.log('waiting for players in room ' + room.id);
+            setWaitingForPlayersAlert(true);
         })
 
         socket.on('game-started', (room: any, game: any) => {
             setRoomPlayers(room.players);
             setRoomCategories(room.categories);
-            console.log('game started in room '+ room.id);
-            navigate(`/game/${game.id}`, { state: { room: room, game: game }});
+            setWaitingForPlayersAlert(false);
+            navigate(`/game/${game.id}`,
+            {
+                state: {
+                    room: room,
+                    game: game,
+                    waitingForPlayersAlert: waitingForPlayersAlert,
+                    setWaitingForPlayersAlert: setWaitingForPlayersAlert,
+                    roomLeftUser: roomLeftUser,
+                    setRoomLeftUser: setRoomLeftUser
+                }
+            });
         })
 
     }, [navigate]);
@@ -74,7 +84,24 @@ export default function Room({ selfUsername }: { selfUsername: string }) {
   return (
     <>
         <section className="text-center col col-lg-3 col-md-4 col-sm-6 col-6 mx-auto">
-            <div>Room {roomId}</div>
+            <div>Room {room.id}</div>
+
+            <div className="container mb-0 mt-5">
+                {waitingForPlayersAlert &&
+                    <div className="alert alert-warning" role="alert">
+                        <h4 className="alert-heading">Waiting for players</h4>
+                        <p>Waiting for other players to finish the game...</p>
+                    </div>
+                }
+            </div>
+
+            <div className="container mb-0 mt-5">
+                {roomLeftUser &&
+                    <div className="alert alert-warning" role="alert">
+                        <h4 className="alert-heading">{roomLeftUser} left the room</h4>
+                    </div>
+                }
+            </div>
             
             <form onSubmit={addCategory}>
                 <div className="input-group mb-3">
