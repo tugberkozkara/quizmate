@@ -6,15 +6,14 @@ import { useNavigate } from 'react-router-dom';
 export default function Homepage({ selfUsername }: { selfUsername: string }) {
 
   const [roomId, setRoomId] = useState('');
+  const [roomFullAlert, setRoomFullAlert] = useState(false);
+  const [roomNotFoundAlert, setRoomNotFoundAlert] = useState(false);
   const navigate = useNavigate();
 
-  // Create a room
   const createRoomHandler = () => {
       socket.emit('create-room', socket.id);
   }
 
-
-  // Join a room
   const roomIdHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setRoomId(e.target.value);
   }
@@ -30,19 +29,45 @@ export default function Homepage({ selfUsername }: { selfUsername: string }) {
     })
 
     socket.on('room-joined', (room: any) => {
+      setRoomFullAlert(false);
+      setRoomNotFoundAlert(false);
       navigate(`/room/${room.id}`, { state: { room: room }});
     })
     
     socket.on('room-is-full', () => {
-      console.log('room is full');
+      setRoomFullAlert(true);
       navigate(`/`);
     })
+
+    socket.on('room-not-found', () => {
+      setRoomNotFoundAlert(true);
+      navigate(`/`);
+    })
+
   }, [navigate]);
 
 
   return (
     <section className="text-center col col-lg-3 col-md-4 col-sm-6 col-6 mx-auto">
       <h1 className="h3 mb-3 fw-normal">Welcome {selfUsername}</h1>
+
+      <div className="container mb-0 mt-5">
+          {roomFullAlert &&
+            <div className="alert alert-warning" role="alert">
+                <h4 className="alert-heading">Room is full</h4>
+                    <p>They don't want you...</p>
+            </div>
+          }
+      </div>
+
+      <div className="container mb-0 mt-5">
+          {roomNotFoundAlert &&
+            <div className="alert alert-warning" role="alert">
+                <h4 className="alert-heading">Room not found</h4>
+                    <p>Room with that id doesn't exist...</p>
+            </div>
+          }
+      </div>
 
       <form onSubmit={joinRoomHandler}>
         <div className="input-group mb-3">
