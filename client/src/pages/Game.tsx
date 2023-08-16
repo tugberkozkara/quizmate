@@ -18,14 +18,12 @@ export default function Game({ selfUsername }: { selfUsername: string }) {
     }
     
     const {state} = useLocation();
-    const room = state.room;
-    const game = state.game;
-    const waitingForPlayersAlert = state.waitingForPlayersAlert;
-    const setWaitingForPlayersAlert = state.setWaitingForPlayersAlert;
-    const roomLeftUser = state.roomLeftUser;
-    const setRoomLeftUser = state.setRoomLeftUser;
+    const {room, game} = state;
     const questions: question[] = game.questions;
     const selfAnswers: selfAnswer[] = [];
+
+    const [waitingForPlayersAlert, setWaitingForPlayersAlert] = useState(false);
+    const [roomLeftUser, setRoomLeftUser] = useState('');
     const navigate = useNavigate();
     
     const finishGame = () => {
@@ -47,15 +45,7 @@ export default function Game({ selfUsername }: { selfUsername: string }) {
         })
 
         socket.on('game-finished', (room: any, game: any) => {
-            navigate(`/result/${game.id}`, 
-            {
-                state: {
-                    room: room,
-                    gameScore: game.playerScores,
-                    roomLeftUser: roomLeftUser,
-                    setRoomLeftUser: setRoomLeftUser 
-                }
-            });
+            navigate(`/result/${game.id}`, { state: { room: room, gameScore: game.playerScores }});
         })
     }, [navigate])
     

@@ -13,8 +13,6 @@ export default function Room({ selfUsername }: { selfUsername: string }) {
     const [roomLeftUser, setRoomLeftUser] = useState('');
     const navigate = useNavigate();
 
-
-    // Start game with a category
     const categoryHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         setCategory(e.target.value);
     }
@@ -31,7 +29,6 @@ export default function Room({ selfUsername }: { selfUsername: string }) {
         socket.emit('start-game', room.id);
     }
 
-    // Leave the room
     const leaveRoom = () => {
         socket.emit('leave-room', room.id);
         navigate(`/`);
@@ -56,29 +53,15 @@ export default function Room({ selfUsername }: { selfUsername: string }) {
         })
         
         socket.on('waiting-for-players', (room: any) => {
-            setRoomPlayers(room.players);
-            setRoomCategories(room.categories);
             setWaitingForPlayersAlert(true);
         })
 
         socket.on('game-started', (room: any, game: any) => {
-            setRoomPlayers(room.players);
-            setRoomCategories(room.categories);
             setWaitingForPlayersAlert(false);
-            navigate(`/game/${game.id}`,
-            {
-                state: {
-                    room: room,
-                    game: game,
-                    waitingForPlayersAlert: waitingForPlayersAlert,
-                    setWaitingForPlayersAlert: setWaitingForPlayersAlert,
-                    roomLeftUser: roomLeftUser,
-                    setRoomLeftUser: setRoomLeftUser
-                }
-            });
+            navigate(`/game/${game.id}`, { state: { room: room, game: game }});
         })
 
-    }, [navigate]);
+    }, [navigate, roomLeftUser, waitingForPlayersAlert]);
     
 
   return (
@@ -90,7 +73,7 @@ export default function Room({ selfUsername }: { selfUsername: string }) {
                 {waitingForPlayersAlert &&
                     <div className="alert alert-warning" role="alert">
                         <h4 className="alert-heading">Waiting for players</h4>
-                        <p>Waiting for other players to finish the game...</p>
+                        <p>Waiting for other players to be ready...</p>
                     </div>
                 }
             </div>
