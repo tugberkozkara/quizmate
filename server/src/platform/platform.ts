@@ -34,5 +34,11 @@ export class Platform {
             this.rooms.push(room);
         }
     }
+
+    removeRoom(roomId: string): void {
+        if (this.rooms.filter(e => e.id === roomId).length > 0){
+            this.rooms = this.rooms.filter(e => e.id !== roomId);
+        }
+    }
     
 }

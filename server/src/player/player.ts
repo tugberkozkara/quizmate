@@ -16,13 +16,9 @@ export class Player {
         return room;
     }
 
-    joinRoom(platform: Platform, roomId: string): Room | null {
+    joinRoom(platform: Platform, roomId: string): void {
         const room = platform.rooms.filter(e => e.id === roomId)[0];
-        if (room && room.players.length < room.playerCapacity) {
-            room.addPlayer(this);
-            return room;
-        }
-        return null;
+        room.addPlayer(this);
     }
 
     leaveRoom(platform: Platform, roomId: string): void {
