@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export const QuestionCard = ({ question, nextQuestion, selfAnswers, finishGame }: { question: any, nextQuestion: any, selfAnswers: any, finishGame: ()=>void } ) => {
+export const QuestionCard = ({ question, nextQuestion, selfAnswers, setSelfAnswers, finishGame }: { question: any, nextQuestion: any, selfAnswers: any, setSelfAnswers: React.Dispatch<React.SetStateAction<any[]>>, finishGame: ()=>void } ) => {
 
     const [answer, setAnswer] = useState('');
 
@@ -10,13 +10,11 @@ export const QuestionCard = ({ question, nextQuestion, selfAnswers, finishGame }
 
     const collectAnswer = (e: any) => {
         e.preventDefault();
-        selfAnswers.push({questionId: question['id'], answer: answer});
+        setSelfAnswers([...selfAnswers, {questionId: question['id'], answer: answer}]);
         if (e.target.id === 'finish-button') {
             finishGame();
         }
     }
-
-
 
   return (
     <>

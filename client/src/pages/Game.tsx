@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { QuestionCard } from '../components/QuestionCard';
 import { socket } from "../socket";
@@ -12,23 +12,18 @@ export default function Game({ selfUsername }: { selfUsername: string }) {
         answer: string
     }
 
-    type selfAnswer = {
-        questionId: number,
-        answer: string
-    }
-    
     const {state} = useLocation();
     const {room, game} = state;
     const questions: question[] = game.questions;
-    const selfAnswers: selfAnswer[] = [];
-
+    const [selfAnswers, setSelfAnswers] = useState([]) as any;
     const [waitingForPlayersAlert, setWaitingForPlayersAlert] = useState(false);
     const [roomLeftUser, setRoomLeftUser] = useState('');
+    const [timeLeft, setTimeLeft] = useState(game.questions.length * 10);
     const navigate = useNavigate();
     
-    const finishGame = () => {
+    const finishGame = useCallback(() => {
         socket.emit('finish-game', room.id, game.id, selfAnswers);
-    }
+    }, [room.id, game.id, selfAnswers]);
 
     const leaveRoom = () => {
         socket.emit('leave-room', room.id);
@@ -45,15 +40,30 @@ export default function Game({ selfUsername }: { selfUsername: string }) {
         })
 
         socket.on('game-finished', (room: any, game: any) => {
+            console.log(game.playerScores);
             navigate(`/result/${game.id}`, { state: { room: room, gameScore: game.playerScores }});
         })
     }, [navigate])
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (timeLeft > 0) {
+                setTimeLeft(timeLeft - 1);
+            }
+            if (timeLeft === 0) {
+                finishGame();
+            }
+        }, 1000);
+        return () => clearTimeout(timer);
+    }, [timeLeft, finishGame]);
     
 
   return (
     <>
         <section className="text-center col col-lg-6 col-md-6 col-sm-10 col-10 mx-auto">
             <div>Game {game.id}</div>
+            <div>Time left: {timeLeft}</div>
+
 
             <div className="container mb-0 mt-5">
                 {waitingForPlayersAlert &&
@@ -80,11 +90,11 @@ export default function Game({ selfUsername }: { selfUsername: string }) {
                             return (
                                 question.id === 1 ?
                                 <div className="carousel-item active" key={i}>
-                                    <QuestionCard question={question} nextQuestion={nextQuestion} selfAnswers={selfAnswers} finishGame={finishGame} />
+                                    <QuestionCard question={question} nextQuestion={nextQuestion} selfAnswers={selfAnswers} setSelfAnswers={setSelfAnswers} finishGame={finishGame} />
                                 </div>
                                 :
                                 <div className="carousel-item" key={i}>
-                                    <QuestionCard question={question} nextQuestion={nextQuestion} selfAnswers={selfAnswers} finishGame={finishGame} />
+                                    <QuestionCard question={question} nextQuestion={nextQuestion} selfAnswers={selfAnswers} setSelfAnswers={setSelfAnswers} finishGame={finishGame} />
                                 </div>
                             )
                         })}
