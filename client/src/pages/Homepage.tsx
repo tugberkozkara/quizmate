@@ -6,16 +6,21 @@ import { useNavigate } from 'react-router-dom';
 export default function Homepage({ selfUsername }: { selfUsername: string }) {
 
   const [roomId, setRoomId] = useState('');
+  const [capacity, setCapacity] = useState(2);
   const [roomFullAlert, setRoomFullAlert] = useState(false);
   const [roomNotFoundAlert, setRoomNotFoundAlert] = useState(false);
   const navigate = useNavigate();
 
-  const createRoomHandler = () => {
-      socket.emit('create-room', socket.id);
+  const capacityHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCapacity(parseInt(e.target.value));
   }
 
   const roomIdHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setRoomId(e.target.value);
+  }
+
+  const createRoomHandler = () => {
+    socket.emit('create-room', capacity);
   }
 
   const joinRoomHandler = (e: React.FormEvent<HTMLFormElement>) => {
@@ -77,7 +82,11 @@ export default function Homepage({ selfUsername }: { selfUsername: string }) {
         <button className="btn btn-outline-primary my-2" type='submit'>Join the room</button>
         </p>
       </form>
-      <p className='mb-0'>or</p>
+      <p className='m-4'>or</p>
+      <div className="input-group mb-3">
+        <label className="form-label text-muted">How many players? {capacity}</label>
+        <input type="range"  className="form-range" min="2" max="10" defaultValue={capacity} onChange={capacityHandler} name="price" required></input>
+      </div>
       <p className='mb-0'>
       <button className="btn btn-outline-primary my-2" onClick={createRoomHandler}>Create a room</button>
       </p>

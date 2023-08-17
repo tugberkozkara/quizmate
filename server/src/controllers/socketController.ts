@@ -5,9 +5,9 @@ import { Game } from "../game/game";
 
 export class socketController {
 
-    static createRoom = (socket: any, platform: Platform) => {
+    static createRoom = (socket: any, platform: Platform, capacity: number) => {
         const player: Player = platform.players.filter(e => e.id === socket.id)[0];
-        const room: Room = player.createRoom(platform);
+        const room: Room = player.createRoom(platform, capacity);
         socket.join(room.id);
         socket.emit("room-created", room);
     }
@@ -49,7 +49,7 @@ export class socketController {
         const player: Player = platform.players.filter(e => e.id === socket.id)[0];
         const room: Room = platform.rooms.filter(e => e.id === roomId)[0];
         room.addActivePlayer(player);
-        if(room.activePlayers.length < room.playerCapacity){
+        if(room.activePlayers.length < room.players.length){
             socket.emit("waiting-for-players", room);
             return;
         }

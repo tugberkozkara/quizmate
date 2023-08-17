@@ -12,15 +12,15 @@ export class Room {
     categories: string[];
     games: Game[];
 
-    constructor(platform: Platform, creatorPlayer: Player) {
+    constructor(platform: Platform, creatorPlayer: Player, playerCapacity: number) {
         this.id = Math.floor(Math.random() * (9999 - 1000) + 1000).toString();
         while (platform.rooms.filter(e => e.id === this.id).length > 0) {
             this.id = Math.floor(Math.random() * (9999 - 1000) + 1000).toString();
         }
         this.creatorPlayer = creatorPlayer;
+        this.playerCapacity = playerCapacity;
         this.players = [this.creatorPlayer,];
         this.activePlayers = [];
-        this.playerCapacity = 2;
         this.categories = [];
         this.games = [];
     }
@@ -38,7 +38,7 @@ export class Room {
     }
 
     addCategory(category: string): void {
-        if (this.categories.length < this.playerCapacity) {
+        if (this.categories.length < this.players.length) {
             this.categories.push(category);
         }
     }

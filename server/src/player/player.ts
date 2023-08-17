@@ -10,8 +10,8 @@ export class Player {
         this.username = username;
     }
 
-    createRoom(platform: Platform): Room {
-        const room = new Room(platform, this);
+    createRoom(platform: Platform, capacity: number): Room {
+        const room = new Room(platform, this, capacity);
         platform.addRoom(room);
         return room;
     }
