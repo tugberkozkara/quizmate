@@ -19,7 +19,7 @@ export default function Homepage({ selfUsername }: { selfUsername: string }) {
     setRoomId(e.target.value);
   }
 
-  const createRoomHandler = () => {
+  const createRoom = () => {
     socket.emit('create-room', capacity);
   }
 
@@ -76,7 +76,7 @@ export default function Homepage({ selfUsername }: { selfUsername: string }) {
 
       <form onSubmit={joinRoomHandler}>
         <div className="input-group mb-3">
-          <input type="text" className="form-control" placeholder="Enter room id" name="room-id" value={roomId} onChange={roomIdHandler}></input>
+          <input type="text" className="form-control" placeholder="Enter room id" name="room-id" value={roomId} onChange={roomIdHandler} required></input>
         </div>
         <p className='mb-0'>
         <button className="btn btn-outline-primary my-2" type='submit'>Join the room</button>
@@ -88,7 +88,7 @@ export default function Homepage({ selfUsername }: { selfUsername: string }) {
         <input type="range"  className="form-range" min="2" max="10" defaultValue={capacity} onChange={capacityHandler} name="price" required></input>
       </div>
       <p className='mb-0'>
-      <button className="btn btn-outline-primary my-2" onClick={createRoomHandler}>Create a room</button>
+      <button className="btn btn-outline-primary my-2" onClick={createRoom}>Create a room</button>
       </p>
 </section>
   )

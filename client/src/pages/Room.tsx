@@ -88,7 +88,7 @@ export default function Room({ selfUsername }: { selfUsername: string }) {
             
             <form onSubmit={addCategory}>
                 <div className="input-group mb-3">
-                    <input type="text" className="form-control" placeholder="Enter a category" name="category" value={category} onChange={categoryHandler}></input>
+                    <input type="text" className="form-control" placeholder="Enter a category" name="category" value={category} onChange={categoryHandler} required></input>
                 </div>
                 <p className='mb-0'>
                     <button id="add-category-button" className="btn btn-outline-dark my-2" type='submit'>Add category</button>
