@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { socket } from "../socket";
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 
 export default function Homepage({ selfUsername }: { selfUsername: string }) {
@@ -54,6 +54,9 @@ export default function Homepage({ selfUsername }: { selfUsername: string }) {
 
   return (
     <section className="text-center col col-lg-3 col-md-4 col-sm-6 col-6 mx-auto">
+      <p className="mb-5 text-muted">
+      <NavLink className="nav-item nav-link mx-2" to="/wtf"><span className="btn btn-outline-secondary">What is that?</span></NavLink>
+      </p>
       <h1 className="h3 mb-3 fw-normal">Welcome {selfUsername}</h1>
 
       <div className="container mb-0 mt-5">

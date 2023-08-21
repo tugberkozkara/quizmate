@@ -13,8 +13,7 @@ const NavBar = (props: Props) => {
             <div className="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
                 <div className="navbar-nav">
                     <NavLink className="nav-item nav-link active mx-2" to="/">Home</NavLink>
-                    <NavLink className="nav-item nav-link active mx-2" to="/">Home</NavLink>
-                    <NavLink className="nav-item nav-link active mx-2" to="/">Home</NavLink>
+                    <NavLink className="nav-item nav-link mx-2" to="/wtf">What?</NavLink>
                 </div>
             </div>
         </nav>

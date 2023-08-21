@@ -9,6 +9,7 @@ import Homepage from './pages/Homepage';
 import Room from './pages/Room';
 import Game from './pages/Game';
 import Result from './pages/Result';
+import WTF from './pages/WTF';
 
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
         <Route path="/room/:roomId" element={<Room selfUsername={ selfUsername }/>} />
         <Route path="/game/:gameId" element={<Game selfUsername={ selfUsername }/>} />
         <Route path="/result/:gameId" element={<Result selfUsername={ selfUsername }/>} />
+        <Route path="/wtf" element={<WTF />} />
       </Routes>
     </div>
   );
