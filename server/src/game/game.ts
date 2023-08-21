@@ -1,6 +1,8 @@
 import { Room } from "../room/room";
 import { Player } from "../player/player";
 
+import { getAIResponse, apiCall } from "../api/openai";
+
 type question = {
     id: number,
     category: string,
@@ -27,7 +29,7 @@ export class Game{
     id: string;
     roomId: string;
     players: Player[];
-    questions: question[];
+    questions: Promise<question[]>;
     playerAnswers: playerAnswers[];
     playerScores: score[];
 
@@ -43,41 +45,31 @@ export class Game{
         this.playerScores = [];
     }
 
-    getQuestions(categories: string[]){
-
-        //TODO: API call to get questions
-
-        const questions: question[] = [
-            {
-                id: 1,
-                category: "Music",
-                question: "What instrument is a central part of a traditional mariachi band?",
-                answer: "Trumpet"
-            },
-            {
-                id: 2,
-                category: "Coffee",
-                question: "What brewing method uses hot water forced through finely-ground coffee beans to make a strong and concentrated coffee?",
-                answer: "Espresso"
-            },
-            {
-                id: 3,
-                category: "Coffee",
-                question: "What is the name of the coffee drink that is made with equal parts espresso, steamed milk, and foamed milk?",
-                answer: "Cappuccino"
-            }
-        ];
+    async getQuestions(categories: string[]) : Promise<question[]>{
+        const questions: question[] = getAIResponse(await apiCall(categories));
         return questions;
     }
 
-    addPlayerAnswers(player: Player, selfAnswers: answer[]): void{
+    async getSerializedGame(): Promise<any>{
+        const resolvedQuestions: question[] = await this.questions;
+        return {
+            id: this.id,
+            roomId: this.roomId,
+            players: this.players,
+            questions: resolvedQuestions,
+            playerAnswers: this.playerAnswers,
+            playerScores: this.playerScores
+        }
+    }
+
+    async addPlayerAnswers(player: Player, selfAnswers: answer[]): Promise<void>{
         const playerAnswer: playerAnswers = {
             player: player,
             answers: selfAnswers
         }
         if(this.playerAnswers.filter(e => e.player.id === player.id).length === 0){
             this.playerAnswers.push(playerAnswer);
-            const score: number = this.getPlayerScore(player);
+            const score: number = await this.getPlayerScore(player);
             const playerScore: score = {
                 player: player,
                 score: score
@@ -86,9 +78,10 @@ export class Game{
         }
     }
 
-    getPlayerScore(player: Player): number{
+    async getPlayerScore(player: Player): Promise<number>{
+        const questions : question[] = await this.questions;
         const playerAnswer: playerAnswers = this.playerAnswers.filter(e => e.player.id === player.id)[0];
-        const score: number = playerAnswer.answers.filter(e => e.answer === this.questions.filter(f => f.id === e.questionId)[0].answer).length;
+        const score: number = playerAnswer.answers.filter(e => e.answer === (questions).filter(f => f.id === e.questionId)[0].answer).length;
         return score;
     }
 }

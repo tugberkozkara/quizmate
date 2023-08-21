@@ -45,19 +45,21 @@ export class socketController {
         io.to(room.id).emit("category-added", room);
     }
 
-    static startGame = (io: any, socket: any, platform: Platform, roomId: string) => {
+    static startGame = async (io: any, socket: any, platform: Platform, roomId: string) => {
         const player: Player = platform.players.filter(e => e.id === socket.id)[0];
         const room: Room = platform.rooms.filter(e => e.id === roomId)[0];
         room.addActivePlayer(player);
-        if(room.activePlayers.length < room.players.length){
+        if(room.activePlayers.length < room.players.length || room.activePlayers.length === 1){
             socket.emit("waiting-for-players", room);
             return;
         }
+        io.to(room.id).emit("waiting-for-questions", room);
         const game: Game = room.startGame();
-        io.to(room.id).emit("game-started", room, game);
+        const gameData = await game.getSerializedGame();
+        io.to(room.id).emit("game-started", room, gameData);
     }
 
-    static finishGame = (io: any, socket: any, platform: Platform, roomId: string, gameId: string, selfAnswers: any) => {
+    static finishGame = async (io: any, socket: any, platform: Platform, roomId: string, gameId: string, selfAnswers: any) => {
         const player: Player = platform.players.filter(e => e.id === socket.id)[0];
         const room: Room = platform.rooms.filter(e => e.id === roomId)[0];
         const game: Game = room.games.filter(e => e.id === gameId)[0];
@@ -67,7 +69,8 @@ export class socketController {
             socket.emit("waiting-for-players", room);
             return;
         }
-        io.to(room.id).emit("game-finished", room, game);
+        const gameData = await game.getSerializedGame();
+        io.to(room.id).emit("game-finished", room, gameData);
     }
 
     static removePlayer = (socket: any, platform: Platform) => {
