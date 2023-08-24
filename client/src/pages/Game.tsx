@@ -21,9 +21,9 @@ export default function Game({ selfUsername }: { selfUsername: string }) {
     const [timeLeft, setTimeLeft] = useState(game.questions.length * 10);
     const navigate = useNavigate();
     
-    const finishGame = useCallback(() => {
+    const finishGame = useCallback((selfAnswers: []) => {
         socket.emit('finish-game', room.id, game.id, selfAnswers);
-    }, [room.id, game.id, selfAnswers]);
+    }, [room.id, game.id]);
 
     const leaveRoom = () => {
         socket.emit('leave-room', room.id);
@@ -40,8 +40,7 @@ export default function Game({ selfUsername }: { selfUsername: string }) {
         })
 
         socket.on('game-finished', (room: any, game: any) => {
-            console.log(game.playerScores);
-            navigate(`/result/${game.id}`, { state: { room: room, gameScore: game.playerScores }});
+            navigate(`/result/${game.id}`, { state: { room: room, game: game }});
         })
     }, [navigate])
 
@@ -51,11 +50,11 @@ export default function Game({ selfUsername }: { selfUsername: string }) {
                 setTimeLeft(timeLeft - 1);
             }
             if (timeLeft === 0) {
-                finishGame();
+                finishGame(selfAnswers);
             }
         }, 1000);
         return () => clearTimeout(timer);
-    }, [timeLeft, finishGame]);
+    }, [timeLeft, finishGame, selfAnswers]);
     
 
   return (
@@ -90,11 +89,11 @@ export default function Game({ selfUsername }: { selfUsername: string }) {
                             return (
                                 question.id === 1 ?
                                 <div className="carousel-item active" key={i}>
-                                    <QuestionCard question={question} nextQuestion={nextQuestion} selfAnswers={selfAnswers} setSelfAnswers={setSelfAnswers} finishGame={finishGame} />
+                                    <QuestionCard question={question} nextQuestion={nextQuestion} selfAnswers={selfAnswers} finishGame={finishGame} />
                                 </div>
                                 :
                                 <div className="carousel-item" key={i}>
-                                    <QuestionCard question={question} nextQuestion={nextQuestion} selfAnswers={selfAnswers} setSelfAnswers={setSelfAnswers} finishGame={finishGame} />
+                                    <QuestionCard question={question} nextQuestion={nextQuestion} selfAnswers={selfAnswers} finishGame={finishGame} />
                                 </div>
                             )
                         })}
