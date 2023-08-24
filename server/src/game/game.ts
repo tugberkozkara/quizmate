@@ -15,14 +15,16 @@ type answer = {
     answer: string
 }
 
-type playerAnswers = {
-    player: Player,
-    answers: answer[]
+type playerAnswer = {
+    question: question,
+    answer: string,
+    correct: boolean
 }
 
-type score = {
+type playerResult = {
     player: Player,
-    score: number
+    score: number,
+    answers: playerAnswer[]
 }
 
 export class Game{
@@ -30,8 +32,7 @@ export class Game{
     roomId: string;
     players: Player[];
     questions: Promise<question[]>;
-    playerAnswers: playerAnswers[];
-    playerScores: score[];
+    playerResults: playerResult[];
 
     constructor(room: Room, players: Player[], categories: string[]){
         this.id = Math.floor(Math.random() * (9 - 1) + 1).toString();
@@ -41,8 +42,7 @@ export class Game{
         this.roomId = room.id;
         this.players = players;
         this.questions = this.getQuestions(categories);
-        this.playerAnswers = [];
-        this.playerScores = [];
+        this.playerResults = [];
     }
 
     async getQuestions(categories: string[]) : Promise<question[]>{
@@ -57,31 +57,33 @@ export class Game{
             roomId: this.roomId,
             players: this.players,
             questions: resolvedQuestions,
-            playerAnswers: this.playerAnswers,
-            playerScores: this.playerScores
+            playerResults: this.playerResults
         }
     }
 
-    async addPlayerAnswers(player: Player, selfAnswers: answer[]): Promise<void>{
-        const playerAnswer: playerAnswers = {
-            player: player,
-            answers: selfAnswers
-        }
-        if(this.playerAnswers.filter(e => e.player.id === player.id).length === 0){
-            this.playerAnswers.push(playerAnswer);
-            const score: number = await this.getPlayerScore(player);
-            const playerScore: score = {
-                player: player,
-                score: score
-            }
-            this.playerScores.push(playerScore);
-        }
+    isCorrect(realAnswer: string, playerAnswer: string): boolean{
+        const realAnswerArray = realAnswer.toLowerCase().split(" ");
+        const playerAnswerArray = playerAnswer.toLowerCase().split(" ");
+        return realAnswerArray.some(e => playerAnswerArray.includes(e));
     }
 
-    async getPlayerScore(player: Player): Promise<number>{
+    async addPlayerResult(player: Player, selfAnswers: answer[]): Promise<void>{
+        if(this.playerResults.filter(e => e.player.id === player.id).length > 0){
+            return;
+        }
         const questions : question[] = await this.questions;
-        const playerAnswer: playerAnswers = this.playerAnswers.filter(e => e.player.id === player.id)[0];
-        const score: number = playerAnswer.answers.filter(e => e.answer === (questions).filter(f => f.id === e.questionId)[0].answer).length;
-        return score;
+        const playerAnswers: playerAnswer[] = selfAnswers.map(e => {
+            const question: question = questions.filter(f => f.id === e.questionId)[0];
+            return {
+                question: question,
+                answer: e.answer,
+                correct: this.isCorrect(question.answer, e.answer)
+            }
+        });
+        this.playerResults.push({
+            player: player,
+            score: playerAnswers.filter(e => e.correct).length,
+            answers: playerAnswers
+        });
     }
 }

@@ -63,7 +63,7 @@ export class socketController {
         const player: Player = platform.players.filter(e => e.id === socket.id)[0];
         const room: Room = platform.rooms.filter(e => e.id === roomId)[0];
         const game: Game = room.games.filter(e => e.id === gameId)[0];
-        game.addPlayerAnswers(player, selfAnswers);
+        game.addPlayerResult(player, selfAnswers);
         room.removeActivePlayer(player);
         if(room.activePlayers.length > 0){
             socket.emit("waiting-for-players", room);
