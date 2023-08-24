@@ -1,27 +1,29 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { socket } from "../socket";
+import { AnswerKey } from '../components/AnswerKey';
 
 export default function Result({ selfUsername }: { selfUsername: string }) {
     const {state} = useLocation();
-    const gameScore = state.gameScore;
-    const room = state.room;
+    const {room, game} = state;
+    const playerResults = game.playerResults;
+    console.log(playerResults);
     const navigate = useNavigate();
-    
+
     type player = {
         id: string,
         username: string
     }
-    let highestScore: number[] = gameScore[0].score;
-    let winners: player[] = [gameScore[0].player];
-    for(let i = 1; i < gameScore.length; i++) {
-        if(gameScore[i].score > highestScore) {
-            highestScore = gameScore[i].score;
-            winners = [gameScore[i].player];
-        }
-        else if(gameScore[i].score === highestScore) {
-            winners.push(gameScore[i].player);
-        }
 
+    let highestScore: number[] = playerResults[0].score;
+    let winners: player[] = [playerResults[0].player];
+    for(let i = 1; i < playerResults.length; i++) {
+        if(playerResults[i].score > highestScore) {
+            highestScore = playerResults[i].score;
+            winners = [playerResults[i].player];
+        }
+        else if(playerResults[i].score === highestScore) {
+            winners.push(playerResults[i].player);
+        }
     }
 
     const leaveRoom = () => {
@@ -37,12 +39,12 @@ export default function Result({ selfUsername }: { selfUsername: string }) {
             <div className="container mb-0 mt-5">
                 {winners.length > 1
                 &&
-                winners.filter(e => e.username === selfUsername).length > 0
+                winners.filter(e => e.id === socket.id).length > 0
                 &&
-                winners.filter(e => e.username === selfUsername)[0].username === selfUsername ?
+                winners.filter(e => e.id === socket.id)[0].id === socket.id ?
                     <div className="alert alert-warning" role="alert">
                         <h4 className="alert-heading">It's a tie!</h4>
-                        <p>The winners are {winners.map(e => e.username).join(', ')}!</p>
+                        <p>A tight race between {winners.map(e => e.username).join(', ')}!</p>
                     </div>
                     :
                     winners[0].id === socket.id ?
@@ -59,7 +61,7 @@ export default function Result({ selfUsername }: { selfUsername: string }) {
             </div>
 
             <div className="container mb-0 mt-5">
-                {gameScore.map((result: any, i: any) => {
+                {playerResults.map((result: any, i: any) => {
                     return (
                         <div key={i} className="row">
                             <div className="col">{result.player.username}</div>
@@ -68,6 +70,14 @@ export default function Result({ selfUsername }: { selfUsername: string }) {
                     )
                 })
                 }
+            </div>
+            
+            <div className="container mb-0 mt-5">
+                <AnswerKey game={game} />
+            </div>
+
+            <div className="container mb-0 mt-5">
+                <button className="btn btn-outline-primary my-3">New Game</button>
             </div>
 
             <p className='mb-0 mt-3'>
