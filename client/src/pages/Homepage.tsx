@@ -23,9 +23,9 @@ export default function Homepage({ selfUsername }: { selfUsername: string }) {
     socket.emit('create-room', capacity);
   }
 
-  const joinRoomHandler = (e: React.FormEvent<HTMLFormElement>) => {
+  const joinRoom = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    socket.emit('join-room', e.currentTarget['room-id'].value);
+    socket.emit('join-room', roomId);
   }
 
   useEffect(() => {
@@ -77,7 +77,7 @@ export default function Homepage({ selfUsername }: { selfUsername: string }) {
           }
       </div>
 
-      <form onSubmit={joinRoomHandler}>
+      <form onSubmit={joinRoom}>
         <div className="input-group mb-3">
           <input type="text" className="form-control" placeholder="Enter room id" name="room-id" value={roomId} onChange={roomIdHandler} required></input>
         </div>
