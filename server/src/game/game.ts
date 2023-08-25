@@ -2,6 +2,7 @@ import { Room } from "../room/room";
 import { Player } from "../player/player";
 
 import { getAIResponse, apiCall } from "../api/openai";
+import { levenshteinDistance } from "../utils/levenshtein";
 
 type question = {
     id: number,
@@ -64,7 +65,7 @@ export class Game{
     isCorrect(realAnswer: string, playerAnswer: string): boolean{
         const realAnswerArray = realAnswer.toLowerCase().split(" ");
         const playerAnswerArray = playerAnswer.toLowerCase().split(" ");
-        return realAnswerArray.some(e => playerAnswerArray.includes(e));
+        return realAnswerArray.some(e => playerAnswerArray.some(f => levenshteinDistance(e, f) <= 1)) || realAnswer.replace(" ", "").toLowerCase() === playerAnswer.replace(" ", "").toLowerCase();
     }
 
     async addPlayerResult(player: Player, selfAnswers: answer[]): Promise<void>{
