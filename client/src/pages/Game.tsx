@@ -20,10 +20,10 @@ export default function Game({ selfUsername }: { selfUsername: string }) {
     const [roomLeftUser, setRoomLeftUser] = useState('');
     const [timeLeft, setTimeLeft] = useState(game.questions.length * 10);
     const navigate = useNavigate();
-    
+
     const finishGame = useCallback((selfAnswers: []) => {
-        socket.emit('finish-game', room.id, game.id, selfAnswers);
-    }, [room.id, game.id]);
+        socket.emit('finish-game', room.id, game.id, selfAnswers, timeLeft);
+    }, [room.id, game.id, timeLeft]);
 
     const leaveRoom = () => {
         socket.emit('leave-room', room.id);
@@ -55,56 +55,56 @@ export default function Game({ selfUsername }: { selfUsername: string }) {
         }, 1000);
         return () => clearTimeout(timer);
     }, [timeLeft, finishGame, selfAnswers]);
-    
-
-  return (
-    <>
-        <section className="text-center col col-lg-6 col-md-6 col-sm-10 col-10 mx-auto">
-            <div>Game {game.id}</div>
-            <div>Time left: {timeLeft}</div>
 
 
-            <div className="container mb-0 mt-5">
-                {waitingForPlayersAlert &&
-                    <div className="alert alert-warning" role="alert">
-                        <h4 className="alert-heading">Waiting for players</h4>
-                        <p>Waiting for other players to finish the game...</p>
-                    </div>
-                }
-            </div>
+    return (
+        <>
+            <section className="text-center col col-lg-6 col-md-6 col-sm-10 col-10 mx-auto">
+                <div>Game {game.id}</div>
+                <div>Time left: {timeLeft}</div>
 
-            <div className="container mb-0 mt-5">
-                {roomLeftUser &&
-                    <div className="alert alert-warning" role="alert">
-                        <h4 className="alert-heading">Room left</h4>
-                        <p>{roomLeftUser} left the room</p>
-                    </div>
-                }
-            </div>
 
-            <div id="carouselExample" className="carousel slide">
-                <div className="carousel-inner">
+                <div className="container mb-0 mt-5">
+                    {waitingForPlayersAlert &&
+                        <div className="alert alert-warning" role="alert">
+                            <h4 className="alert-heading">Waiting for players</h4>
+                            <p>Waiting for other players to finish the game...</p>
+                        </div>
+                    }
+                </div>
+
+                <div className="container mb-0 mt-5">
+                    {roomLeftUser &&
+                        <div className="alert alert-warning" role="alert">
+                            <h4 className="alert-heading">Room left</h4>
+                            <p>{roomLeftUser} left the room</p>
+                        </div>
+                    }
+                </div>
+
+                <div id="carouselExample" className="carousel slide">
+                    <div className="carousel-inner">
                         {questions.map((question: question, i: any) => {
                             let nextQuestion = questions[question.id]
                             return (
                                 question.id === 1 ?
-                                <div className="carousel-item active" key={i}>
-                                    <QuestionCard question={question} nextQuestion={nextQuestion} selfAnswers={selfAnswers} finishGame={finishGame} />
-                                </div>
-                                :
-                                <div className="carousel-item" key={i}>
-                                    <QuestionCard question={question} nextQuestion={nextQuestion} selfAnswers={selfAnswers} finishGame={finishGame} />
-                                </div>
+                                    <div className="carousel-item active" key={i}>
+                                        <QuestionCard question={question} nextQuestion={nextQuestion} selfAnswers={selfAnswers} finishGame={finishGame} />
+                                    </div>
+                                    :
+                                    <div className="carousel-item" key={i}>
+                                        <QuestionCard question={question} nextQuestion={nextQuestion} selfAnswers={selfAnswers} finishGame={finishGame} />
+                                    </div>
                             )
                         })}
+                    </div>
                 </div>
-            </div>
 
-            <p className='mb-0'>
-                <button className="btn btn-outline-danger my-3" onClick={leaveRoom}>Leave Game</button>
-            </p>
+                <p className='mb-0'>
+                    <button className="btn btn-outline-danger my-3" onClick={leaveRoom}>Leave Game</button>
+                </p>
 
-        </section>
-    </>
-  )
+            </section>
+        </>
+    )
 }

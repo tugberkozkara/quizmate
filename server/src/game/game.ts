@@ -25,7 +25,8 @@ type playerAnswer = {
 type playerResult = {
     player: Player,
     score: number,
-    answers: playerAnswer[]
+    answers: playerAnswer[],
+    timeLeft: number
 }
 
 export class Game{
@@ -68,11 +69,11 @@ export class Game{
         return realAnswerArray.some(e => playerAnswerArray.some(f => levenshteinDistance(e, f) <= 1)) || realAnswer.replace(" ", "").toLowerCase() === playerAnswer.replace(" ", "").toLowerCase();
     }
 
-    async addPlayerResult(player: Player, selfAnswers: answer[]): Promise<void>{
+    async addPlayerResult(player: Player, selfAnswers: answer[], selfTimeLeft: number): Promise<void> {
         if(this.playerResults.filter(e => e.player.id === player.id).length > 0){
             return;
         }
-        const questions : question[] = await this.questions;
+        const questions: question[] = await this.questions;
         const playerAnswers: playerAnswer[] = selfAnswers.map(e => {
             const question: question = questions.filter(f => f.id === e.questionId)[0];
             return {
@@ -84,7 +85,8 @@ export class Game{
         this.playerResults.push({
             player: player,
             score: playerAnswers.filter(e => e.correct).length,
-            answers: playerAnswers
+            answers: playerAnswers,
+            timeLeft: selfTimeLeft
         });
     }
 }

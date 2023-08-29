@@ -59,11 +59,11 @@ export class socketController {
         io.to(room.id).emit("game-started", room, gameData);
     }
 
-    static finishGame = async (io: any, socket: any, platform: Platform, roomId: string, gameId: string, selfAnswers: any) => {
+    static finishGame = async (io: any, socket: any, platform: Platform, roomId: string, gameId: string, selfAnswers: any, selfTimeLeft: number) => {
         const player: Player = platform.players.filter(e => e.id === socket.id)[0];
         const room: Room = platform.rooms.filter(e => e.id === roomId)[0];
         const game: Game = room.games.filter(e => e.id === gameId)[0];
-        game.addPlayerResult(player, selfAnswers);
+        game.addPlayerResult(player, selfAnswers, selfTimeLeft);
         room.removeActivePlayer(player);
         if(room.activePlayers.length > 0){
             socket.emit("waiting-for-players", room);
@@ -76,6 +76,6 @@ export class socketController {
     static removePlayer = (socket: any, platform: Platform) => {
         const player: Player = platform.players.filter(e => e.id === socket.id)[0];
         platform.removePlayer(player);
-    }    
+    }
 
 }
