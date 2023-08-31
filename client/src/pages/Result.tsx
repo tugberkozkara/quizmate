@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { socket } from "../socket";
+import { Alert } from '../components/alerts/Alert';
 import { AnswerKey } from '../components/AnswerKey';
 
 export default function Result({ selfUsername }: { selfUsername: string }) {
@@ -38,29 +39,18 @@ export default function Result({ selfUsername }: { selfUsername: string }) {
             <section className="text-center col col-lg-6 col-md-6 col-sm-10 col-10 mx-auto">
                 <div>Game Result</div>
 
-                <div className="container mb-0 mt-5">
-                    {winners.length > 1
-                        &&
-                        winners.filter(e => e.id === socket.id).length > 0
-                        &&
-                        winners.filter(e => e.id === socket.id)[0].id === socket.id ?
-                        <div className="alert alert-warning" role="alert">
-                            <h4 className="alert-heading">It's a tie!</h4>
-                            <p>A tight race between {winners.map(e => e.username).join(', ')}!</p>
-                        </div>
+                {winners.length > 1
+                    &&
+                    winners.filter(e => e.id === socket.id).length > 0
+                    &&
+                    winners.filter(e => e.id === socket.id)[0].id === socket.id ?
+                        <Alert type="warning" heading="It's a tie!" text={`A tight race between ${winners.map(e => e.username).join(', ')}!`} mutedText="" hasSpinner={false}/>
                         :
                         winners[0].id === socket.id ?
-                            <div className="alert alert-success" role="alert">
-                                <h4 className="alert-heading">Congratulations!</h4>
-                                <p>You are the winner!</p>
-                            </div>
+                            <Alert type="success" heading="Congratulations!" text="You are the winner!" mutedText="" hasSpinner={false}/>
                             :
-                            <div className="alert alert-danger" role="alert">
-                                <h4 className="alert-heading">Maybe next time!</h4>
-                                <p>The winner is {winners[0].username}!</p>
-                            </div>
-                    }
-                </div>
+                            <Alert type="danger" heading="Maybe next time!" text={`The winner is ${winners[0].username}!`} mutedText="" hasSpinner={false}/>
+                }
 
                 <div className="container mb-0 mt-5">
                     <div className="row">

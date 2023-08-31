@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { QuestionCard } from '../components/QuestionCard';
+import { Alert } from "../components/alerts/Alert";
 import { socket } from "../socket";
 
 export default function Game({ selfUsername }: { selfUsername: string }) {
@@ -63,24 +64,13 @@ export default function Game({ selfUsername }: { selfUsername: string }) {
                 <div>Game {game.id}</div>
                 <div>Time left: {timeLeft}</div>
 
+                {waitingForPlayersAlert &&
+                    <Alert type="warning" heading="Waiting for players" text="Waiting for other players to finish the game..." mutedText="" hasSpinner={false} />
+                }
 
-                <div className="container mb-0 mt-5">
-                    {waitingForPlayersAlert &&
-                        <div className="alert alert-warning" role="alert">
-                            <h4 className="alert-heading">Waiting for players</h4>
-                            <p>Waiting for other players to finish the game...</p>
-                        </div>
-                    }
-                </div>
-
-                <div className="container mb-0 mt-5">
-                    {roomLeftUser &&
-                        <div className="alert alert-warning" role="alert">
-                            <h4 className="alert-heading">Room left</h4>
-                            <p>{roomLeftUser} left the room</p>
-                        </div>
-                    }
-                </div>
+                {roomLeftUser &&
+                    <Alert type="warning" heading="Room left" text={`${roomLeftUser} left the room`} mutedText="" hasSpinner={false} />
+                }
 
                 <div id="carouselExample" className="carousel slide">
                     <div className="carousel-inner">

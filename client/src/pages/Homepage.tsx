@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { socket } from "../socket";
 import { NavLink, useNavigate } from 'react-router-dom';
-
+import { socket } from "../socket";
+import { Alert } from "../components/alerts/Alert";
 
 export default function Homepage({ selfUsername }: { selfUsername: string }) {
 
@@ -55,27 +55,16 @@ export default function Homepage({ selfUsername }: { selfUsername: string }) {
   return (
     <section className="text-center col col-lg-3 col-md-4 col-sm-6 col-6 mx-auto">
       <p className="mb-5 text-muted">
-      <NavLink className="nav-item nav-link mx-2" to="/wtf"><span className="btn btn-outline-secondary">What is that?</span></NavLink>
+        <NavLink className="mx-2" to="/wtf"><span className="btn btn-outline-secondary">What is that?</span></NavLink>
       </p>
       <h1 className="h3 mb-3 fw-normal">Welcome {selfUsername}</h1>
 
-      <div className="container mb-0 mt-5">
-          {roomFullAlert &&
-            <div className="alert alert-warning" role="alert">
-                <h4 className="alert-heading">Room is full</h4>
-                    <p>They don't want you...</p>
-            </div>
-          }
-      </div>
-
-      <div className="container mb-0 mt-5">
-          {roomNotFoundAlert &&
-            <div className="alert alert-warning" role="alert">
-                <h4 className="alert-heading">Room not found</h4>
-                    <p>Room with that id doesn't exist...</p>
-            </div>
-          }
-      </div>
+      {roomFullAlert &&
+        <Alert type="warning" heading="Room is full" text="They don't want you..." hasSpinner={false} mutedText=""/>
+      }
+      {roomNotFoundAlert &&
+        <Alert type="warning" heading="Room not found" text="Room with that id doesn't exist..." hasSpinner={false} mutedText=""/>
+      }
 
       <form onSubmit={joinRoom}>
         <div className="input-group mb-3">
@@ -93,7 +82,7 @@ export default function Homepage({ selfUsername }: { selfUsername: string }) {
       <p className='mb-0'>
       <button className="btn btn-outline-primary my-2" onClick={createRoom}>Create a room</button>
       </p>
-</section>
+    </section>
   )
 }
 

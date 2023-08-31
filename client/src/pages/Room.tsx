@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { socket } from "../socket";
+import { Alert } from "../components/alerts/Alert";
 
 export default function Room({ selfUsername }: { selfUsername: string }) {
     const {state} = useLocation();
@@ -79,29 +80,19 @@ export default function Room({ selfUsername }: { selfUsername: string }) {
 
             <div className="container mb-0 mt-5">
                 {waitingForPlayersAlert &&
-                    <div className="alert alert-warning" role="alert">
-                        <h4 className="alert-heading">Waiting for players</h4>
-                        <p>Waiting for other players to be ready...</p>
-                    </div>
+                    <Alert type="warning" heading="Waiting for Players" text="Waiting for other players to be ready..." mutedText="" hasSpinner={false} />
                 }
             </div>
 
             <div className="container mb-0 mt-5">
                 {roomLeftUser &&
-                    <div className="alert alert-warning" role="alert">
-                        <h4 className="alert-heading">{roomLeftUser} left the room</h4>
-                    </div>
+                    <Alert type="warning" heading="Room left" text={`${roomLeftUser} left the room`} mutedText="" hasSpinner={false} />
                 }
             </div>
 
             <div className="container mb-0 mt-5">
                 {waitingForQuestionsAlert ?(
-                    <div className="alert alert-warning" role="alert">
-                        <h4 className="alert-heading">Waiting for Questions</h4>
-                        <p>AI generated questions will be here!</p>
-                        <div className="spinner-border" role="status"></div>
-                        <p className="mb-0 small text-muted">This process may take up to a minute.</p>
-                    </div>
+                    <Alert type="warning" heading="Waiting for Questions" text="AI generated questions will be here!" mutedText="This process may take up to a minute." hasSpinner={true} />
                 ):
                 (
                     <>
