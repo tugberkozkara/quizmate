@@ -2,31 +2,14 @@ import { useState, useEffect } from "react";
 import { NavLink, useNavigate } from 'react-router-dom';
 import { socket } from "../socket";
 import { Alert } from "../components/alerts/Alert";
+import { JoinRoom } from "../components/homepage/JoinRoom";
+import { CreateRoom } from "../components/homepage/CreateRoom";
 
 export default function Homepage({ selfUsername }: { selfUsername: string }) {
 
-  const [roomId, setRoomId] = useState('');
-  const [capacity, setCapacity] = useState(2);
   const [roomFullAlert, setRoomFullAlert] = useState(false);
   const [roomNotFoundAlert, setRoomNotFoundAlert] = useState(false);
   const navigate = useNavigate();
-
-  const capacityHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCapacity(parseInt(e.target.value));
-  }
-
-  const roomIdHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setRoomId(e.target.value);
-  }
-
-  const createRoom = () => {
-    socket.emit('create-room', capacity);
-  }
-
-  const joinRoom = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    socket.emit('join-room', roomId);
-  }
 
   useEffect(() => {
     socket.on('room-created', (room: any) => {
@@ -41,12 +24,10 @@ export default function Homepage({ selfUsername }: { selfUsername: string }) {
     
     socket.on('room-is-full', () => {
       setRoomFullAlert(true);
-      navigate(`/`);
     })
 
     socket.on('room-not-found', () => {
       setRoomNotFoundAlert(true);
-      navigate(`/`);
     })
 
   }, [navigate]);
@@ -66,22 +47,9 @@ export default function Homepage({ selfUsername }: { selfUsername: string }) {
         <Alert type="warning" heading="Room not found" text="Room with that id doesn't exist..." hasSpinner={false} mutedText=""/>
       }
 
-      <form onSubmit={joinRoom}>
-        <div className="input-group mb-3">
-          <input type="text" className="form-control" placeholder="Enter room id" name="room-id" value={roomId} onChange={roomIdHandler} required></input>
-        </div>
-        <p className='mb-0'>
-        <button className="btn btn-outline-primary my-2" type='submit'>Join the room</button>
-        </p>
-      </form>
+      <JoinRoom />
       <p className='m-4'>or</p>
-      <div className="input-group mb-3">
-        <label className="form-label text-muted">How many players? {capacity}</label>
-        <input type="range"  className="form-range" min="2" max="10" defaultValue={capacity} onChange={capacityHandler} name="price" required></input>
-      </div>
-      <p className='mb-0'>
-      <button className="btn btn-outline-primary my-2" onClick={createRoom}>Create a room</button>
-      </p>
+      <CreateRoom />
     </section>
   )
 }
