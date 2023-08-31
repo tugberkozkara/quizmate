@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { QuestionCard } from '../components/QuestionCard';
 import { Alert } from "../components/alerts/Alert";
 import { socket } from "../socket";
+import { LeaveRoom } from '../components/room/LeaveRoom';
 
 export default function Game({ selfUsername }: { selfUsername: string }) {
 
@@ -25,11 +26,6 @@ export default function Game({ selfUsername }: { selfUsername: string }) {
     const finishGame = useCallback((selfAnswers: []) => {
         socket.emit('finish-game', room.id, game.id, selfAnswers, timeLeft);
     }, [room.id, game.id, timeLeft]);
-
-    const leaveRoom = () => {
-        socket.emit('leave-room', room.id);
-        navigate(`/`);
-    }
 
     useEffect(() => {
         socket.on('room-left', (room: any, player: any) => {
@@ -89,11 +85,7 @@ export default function Game({ selfUsername }: { selfUsername: string }) {
                         })}
                     </div>
                 </div>
-
-                <p className='mb-0'>
-                    <button className="btn btn-outline-danger my-3" onClick={leaveRoom}>Leave Game</button>
-                </p>
-
+                <LeaveRoom roomId={room.id} navigate={navigate} />
             </section>
         </>
     )
