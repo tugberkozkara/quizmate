@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { QuestionCard } from '../components/QuestionCard';
-import { Alert } from "../components/alerts/Alert";
 import { socket } from "../socket";
+import { Alert } from "../components/alerts/Alert";
 import { LeaveRoom } from '../components/room/LeaveRoom';
+import { QuestionCard } from '../components/game/QuestionCard';
+import { Timer } from '../components/game/Timer';
 
 export default function Game({ selfUsername }: { selfUsername: string }) {
 
@@ -20,7 +21,8 @@ export default function Game({ selfUsername }: { selfUsername: string }) {
     const [selfAnswers, setSelfAnswers] = useState([]) as any;
     const [waitingForPlayersAlert, setWaitingForPlayersAlert] = useState(false);
     const [roomLeftUser, setRoomLeftUser] = useState('');
-    const [timeLeft, setTimeLeft] = useState(game.questions.length * 10);
+    const timeMax = game.questions.length * 10;
+    const [timeLeft, setTimeLeft] = useState(timeMax);
     const navigate = useNavigate();
 
     const finishGame = useCallback((selfAnswers: []) => {
@@ -42,15 +44,9 @@ export default function Game({ selfUsername }: { selfUsername: string }) {
     }, [navigate])
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            if (timeLeft > 0) {
-                setTimeLeft(timeLeft - 1);
-            }
-            if (timeLeft === 0) {
-                finishGame(selfAnswers);
-            }
-        }, 1000);
-        return () => clearTimeout(timer);
+        if (timeLeft === 0) {
+            finishGame(selfAnswers);
+        }
     }, [timeLeft, finishGame, selfAnswers]);
 
 
@@ -58,7 +54,7 @@ export default function Game({ selfUsername }: { selfUsername: string }) {
         <>
             <section className="text-center col col-lg-6 col-md-6 col-sm-10 col-10 mx-auto">
                 <div>Game {game.id}</div>
-                <div>Time left: {timeLeft}</div>
+                <Timer timeMax={timeMax} timeLeft={timeLeft} setTimeLeft={setTimeLeft} />
 
                 {waitingForPlayersAlert &&
                     <Alert type="warning" heading="Waiting for players" text="Waiting for other players to finish the game..." mutedText="" hasSpinner={false} />
