@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { socket } from "../socket";
+import { NavBar } from '../components/NavBar';
 import { Alert } from "../components/alerts/Alert";
 import { AddCategory } from '../components/room/AddCategory';
 import { StartGame } from '../components/room/StartGame';
@@ -57,7 +58,8 @@ export default function Room({ selfUsername }: { selfUsername: string }) {
     
 
   return (
-    <>
+    <>  
+        <NavBar />
         <section className="text-center col col-lg-3 col-md-4 col-sm-6 col-6 mx-auto">
             <div>Room {room.id}</div>
 

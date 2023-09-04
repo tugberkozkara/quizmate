@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { socket } from "../socket";
+import { NavBar } from '../components/NavBar';
 import { Alert } from "../components/alerts/Alert";
 import { LeaveRoom } from '../components/room/LeaveRoom';
 import { QuestionCard } from '../components/game/QuestionCard';
@@ -51,7 +52,8 @@ export default function Game({ selfUsername }: { selfUsername: string }) {
 
 
     return (
-        <>
+        <>  
+            <NavBar />
             <section className="text-center col col-lg-6 col-md-6 col-sm-10 col-10 mx-auto">
                 <div>Game {game.id}</div>
                 <Timer timeMax={timeMax} timeLeft={timeLeft} setTimeLeft={setTimeLeft} />
