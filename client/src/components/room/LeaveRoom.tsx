@@ -9,7 +9,7 @@ export const LeaveRoom = ({roomId, navigate}: LeaveRoomProps) => {
 
     const leaveRoom = () => {
         socket.emit('leave-room', roomId);
-        navigate(`/`);
+        navigate(`/lobby`);
     }
 
   return (
