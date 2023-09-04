@@ -1,6 +1,13 @@
 import { useState } from 'react';
 
-export const QuestionCard = ({ question, nextQuestion, selfAnswers, finishGame }: { question: any, nextQuestion: any, selfAnswers: any, finishGame: (selfAnswers: []) => void } ) => {
+type QuestionCardProps = {
+    question: any,
+    nextQuestion: any,
+    selfAnswers: any,
+    finishGame: (selfAnswers: []) => void
+}
+
+export const QuestionCard = ({ question, nextQuestion, selfAnswers, finishGame }: QuestionCardProps) => {
 
     const [answer, setAnswer] = useState('');
 

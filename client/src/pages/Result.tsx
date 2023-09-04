@@ -8,7 +8,6 @@ export default function Result({ selfUsername }: { selfUsername: string }) {
     const {state} = useLocation();
     const {room, game} = state;
     const playerResults = game.playerResults;
-    console.log(playerResults);
     const navigate = useNavigate();
 
     type player = {
