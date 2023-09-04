@@ -1,9 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {Routes, Route} from 'react-router-dom';
-
-import { socket } from './socket';
-import { getRandomUsername } from './utils/randomUsername';
-import Homepage from './pages/Homepage';
+import Home from './pages/Home';
+import Lobby from './pages/Lobby';
 import Room from './pages/Room';
 import Game from './pages/Game';
 import Result from './pages/Result';
@@ -12,22 +10,12 @@ import WTF from './pages/WTF';
 
 function App() {
   const [selfUsername, setSelfUsername] = useState('');
-
-  useEffect(() => {
-    socket.auth = { username: getRandomUsername() };
-    socket.connect();
-    
-    setSelfUsername(socket.auth.username);
-
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
   
   return (
     <div>
       <Routes>
-        <Route path="/" element={<Homepage selfUsername={ selfUsername }/>} />
+        <Route path="/" element={<Home selfUsername={ selfUsername } setSelfUsername={setSelfUsername}/>} />
+        <Route path="/lobby" element={<Lobby selfUsername={ selfUsername }/>} />
         <Route path="/room/:roomId" element={<Room selfUsername={ selfUsername }/>} />
         <Route path="/game/:gameId" element={<Game selfUsername={ selfUsername }/>} />
         <Route path="/result/:gameId" element={<Result selfUsername={ selfUsername }/>} />
