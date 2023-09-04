@@ -34,6 +34,7 @@ export class Game{
     roomId: string;
     players: Player[];
     questions: Promise<question[]>;
+    timeMax: number;
     playerResults: playerResult[];
 
     constructor(room: Room, players: Player[], categories: string[]){
@@ -44,6 +45,7 @@ export class Game{
         this.roomId = room.id;
         this.players = players;
         this.questions = this.getQuestions(categories);
+        this.timeMax = 0;
         this.playerResults = [];
     }
 
@@ -59,6 +61,7 @@ export class Game{
             roomId: this.roomId,
             players: this.players,
             questions: resolvedQuestions,
+            timeMax: resolvedQuestions.length * 10,
             playerResults: this.playerResults
         }
     }

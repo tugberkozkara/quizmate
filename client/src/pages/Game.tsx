@@ -19,11 +19,11 @@ export default function Game({ selfUsername }: { selfUsername: string }) {
     const {state} = useLocation();
     const {room, game} = state;
     const questions: question[] = game.questions;
+    const timeMax: number = game.timeMax;
+    const [timeLeft, setTimeLeft] = useState(timeMax);
     const [selfAnswers, setSelfAnswers] = useState([]) as any;
     const [waitingForPlayersAlert, setWaitingForPlayersAlert] = useState(false);
     const [roomLeftUser, setRoomLeftUser] = useState('');
-    const timeMax = game.questions.length * 10;
-    const [timeLeft, setTimeLeft] = useState(timeMax);
     const navigate = useNavigate();
 
     const finishGame = useCallback((selfAnswers: []) => {
