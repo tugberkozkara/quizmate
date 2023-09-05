@@ -55,7 +55,7 @@ export default function Game({ selfUsername }: { selfUsername: string }) {
         <>  
             <NavBar />
             <section className="text-center col col-lg-6 col-md-6 col-sm-10 col-10 mx-auto">
-                <div>Game {game.id}</div>
+                <div className="h3 mb-5 fw-light">Game <span className="fw-bold font-monospace">{game.id}</span></div>
                 <Timer timeMax={timeMax} timeLeft={timeLeft} setTimeLeft={setTimeLeft} />
 
                 {waitingForPlayersAlert &&

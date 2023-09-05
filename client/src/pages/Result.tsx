@@ -38,7 +38,7 @@ export default function Result({ selfUsername }: { selfUsername: string }) {
         <>
             <NavBar />
             <section className="text-center col col-lg-6 col-md-6 col-sm-10 col-10 mx-auto">
-                <div>Game Result</div>
+            <div className="h3 mb-5 fw-light">Game Result</div>
 
                 {winners.length > 1
                     &&

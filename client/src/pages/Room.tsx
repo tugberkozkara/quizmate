@@ -61,10 +61,11 @@ export default function Room({ selfUsername }: { selfUsername: string }) {
     <>  
         <NavBar />
         <section className="text-center col col-lg-3 col-md-4 col-sm-6 col-6 mx-auto">
-            <div>Room {room.id}</div>
+            <div className="h3 fw-light">Room <span className="fw-bold font-monospace">{room.id}</span></div>
+            <div className="small text-muted mb-5">Tell this room code to your mates, so they can join.</div>
 
             {waitingForPlayersAlert &&
-                <Alert type="warning" heading="Waiting for Players" text="Waiting for other players to be ready..." mutedText="" hasSpinner={false} />
+                <Alert type="warning" heading="Waiting for Players" text="Waiting for other players to be ready..." mutedText="The game will start when everyone presses the Start Game button." hasSpinner={false} />
             }
 
             {roomLeftUser &&
