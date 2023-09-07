@@ -38,10 +38,7 @@ export class Game{
     playerResults: playerResult[];
 
     constructor(room: Room, players: Player[], categories: string[]){
-        this.id = Math.floor(Math.random() * (9 - 1) + 1).toString();
-        while(room.games.filter(e => e.id === this.id).length > 0){
-            this.id = Math.floor(Math.random() * (9 - 1) + 1).toString();
-        }
+        this.id = (room.games.length + 1).toString();
         this.roomId = room.id;
         this.players = players;
         this.questions = this.getQuestions(categories);
