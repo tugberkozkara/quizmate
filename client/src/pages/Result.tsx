@@ -2,7 +2,10 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { socket } from "../socket";
 import { NavBar } from '../components/NavBar';
 import { Alert } from '../components/alerts/Alert';
-import { AnswerKey } from '../components/AnswerKey';
+import { AnswerKey } from '../components/result/AnswerKey';
+import { LeaveRoom } from '../components/room/LeaveRoom';
+import { GameResult } from '../components/result/GameResult';
+import { RoomResult } from '../components/result/RoomResult';
 
 export default function Result({ selfUsername }: { selfUsername: string }) {
     const {state} = useLocation();
@@ -29,9 +32,8 @@ export default function Result({ selfUsername }: { selfUsername: string }) {
         }
     }
 
-    const leaveRoom = () => {
-        socket.emit('leave-room', room.id);
-        navigate(`/`);
+    const backToRoom = () => {
+        navigate(`/room/${room.id}`, { state: { room: room }});
     }
 
     return (
@@ -53,22 +55,13 @@ export default function Result({ selfUsername }: { selfUsername: string }) {
                             <Alert type="danger" heading="Maybe next time!" text={`The winner is ${winners[0].username}!`} mutedText="" hasSpinner={false}/>
                 }
 
-                <div className="container mb-0 mt-5">
-                    <div className="row">
-                        <div className="col-6 fw-bold">Player</div>
-                        <div className="col-3 fw-bold">Score</div>
-                        <div className="col-3 fw-bold">Time Left</div>
+                <div className="row">
+                    <div className="col-12 col-md-6">
+                        <GameResult game={game} />
                     </div>
-                    {playerResults.map((result: any, i: any) => {
-                        return (
-                            <div key={i} className="row">
-                                <div className="col-6">{result.player.username}</div>
-                                <div className="col-3">{result.score}</div>
-                                <div className="col-3">{result.timeLeft}</div>
-                            </div>
-                        )
-                    })
-                    }
+                    <div className="col-12 col-md-6">
+                        <RoomResult room={room} />
+                    </div>
                 </div>
 
                 <div className="container mb-0 mt-5">
@@ -76,12 +69,10 @@ export default function Result({ selfUsername }: { selfUsername: string }) {
                 </div>
 
                 <div className="container mb-0 mt-5">
-                    <button className="btn btn-outline-primary my-3">New Game</button>
+                    <button className="btn btn-outline-primary my-3" onClick={backToRoom}>New Game</button>
                 </div>
 
-                <p className='mb-0 mt-3'>
-                    <button className="btn btn-outline-danger my-3" onClick={leaveRoom}>Back to Homepage</button>
-                </p>
+                <LeaveRoom roomId={room.id} navigate={navigate} />
 
             </section>
         </>
