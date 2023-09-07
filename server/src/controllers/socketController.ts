@@ -70,6 +70,7 @@ export class socketController {
             return;
         }
         const gameData = await game.getSerializedGame();
+        room.finishGame(gameData);
         io.to(room.id).emit("game-finished", room, gameData);
     }
 

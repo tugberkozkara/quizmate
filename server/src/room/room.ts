@@ -3,6 +3,11 @@ import { Player } from "../player/player";
 import { Game } from "../game/game";
 
 
+type playerResults = {
+    player: Player;
+    score: number;
+}
+
 export class Room {
     id: string;
     creatorPlayer: Player;
@@ -11,6 +16,7 @@ export class Room {
     activePlayers: Player[];
     categories: string[];
     games: Game[];
+    results: playerResults[];
 
     constructor(platform: Platform, creatorPlayer: Player, playerCapacity: number) {
         this.id = Math.floor(Math.random() * (9999 - 1000) + 1000).toString();
@@ -23,11 +29,13 @@ export class Room {
         this.activePlayers = [];
         this.categories = [];
         this.games = [];
+        this.results = [{ player: this.creatorPlayer, score: 0 },];
     }
 
     addPlayer(player: Player): void {
         if (this.players.length < this.playerCapacity) {
             this.players.push(player);
+            this.results.push({ player: player, score: 0 });
         }
     }
 
@@ -41,6 +49,10 @@ export class Room {
         if (this.categories.length < this.players.length) {
             this.categories.push(category);
         }
+    }
+
+    removeAllCategories(): void {
+        this.categories = [];
     }
 
     addActivePlayer(player: Player): void {
@@ -62,8 +74,19 @@ export class Room {
     }
 
     finishGame(game: Game): void {
-        if (this.games.filter(e => e.id === game.id).length > 0) {
-            this.games = this.games.filter(e => e.id !== game.id);
-        }
+        this.removeAllCategories();
+        let winner: Player = game.playerResults[0].player;
+        let highestScore: number = game.playerResults[0].score;
+        game.playerResults.forEach(e => {
+            if (e.score > highestScore) {
+                winner = e.player;
+                highestScore = e.score;
+            }
+        });
+        this.results.forEach(e => {
+            if (e.player.id === winner.id) {
+                e.score++;
+            }
+        });
     }
 }
