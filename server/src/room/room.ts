@@ -77,10 +77,12 @@ export class Room {
         this.removeAllCategories();
         let winner: Player = game.playerResults[0].player;
         let highestScore: number = game.playerResults[0].score;
+        let highestTimeLeft: number = game.playerResults[0].timeLeft;
         game.playerResults.forEach(e => {
-            if (e.score > highestScore) {
+            if (e.score > highestScore || (e.score === highestScore && e.timeLeft > highestTimeLeft)) {
                 winner = e.player;
                 highestScore = e.score;
+                highestTimeLeft = e.timeLeft;
             }
         });
         this.results.forEach(e => {
