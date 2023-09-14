@@ -33,7 +33,7 @@ export default function Result({ selfUsername }: { selfUsername: string }) {
     }
 
     const backToRoom = () => {
-        navigate(`/room/${room.id}`, { state: { room: room }});
+        navigate(`/rooms/${room.id}`, { state: { room: room }});
     }
 
     return (

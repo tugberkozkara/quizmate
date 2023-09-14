@@ -19,13 +19,13 @@ export default function Lobby({ selfUsername }: { selfUsername: string }) {
 
   useEffect(() => {
     socket.on('room-created', (room: any) => {
-      navigate(`/room/${room.id}`, { state: { room: room }});
+      navigate(`/rooms/${room.id}`, { state: { room: room }});
     })
 
     socket.on('room-joined', (room: any) => {
       setRoomFullAlert(false);
       setRoomNotFoundAlert(false);
-      navigate(`/room/${room.id}`, { state: { room: room }});
+      navigate(`/rooms/${room.id}`, { state: { room: room }});
     })
     
     socket.on('room-is-full', () => {

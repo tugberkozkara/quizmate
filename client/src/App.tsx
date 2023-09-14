@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import {Routes, Route} from 'react-router-dom';
+import {Routes, Route, Navigate} from 'react-router-dom';
 import Home from './pages/Home';
 import Lobby from './pages/Lobby';
 import Room from './pages/Room';
@@ -16,9 +16,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Home selfUsername={ selfUsername } setSelfUsername={setSelfUsername}/>} />
         <Route path="/lobby" element={<Lobby selfUsername={ selfUsername }/>} />
-        <Route path="/room/:roomId" element={<Room selfUsername={ selfUsername }/>} />
-        <Route path="/game/:gameId" element={<Game selfUsername={ selfUsername }/>} />
-        <Route path="/result/:gameId" element={<Result selfUsername={ selfUsername }/>} />
+        <Route path="/rooms/:roomId" element={<Room selfUsername={ selfUsername }/>} />
+        <Route path="/rooms/:roomId/games/:gameId" element={<Game selfUsername={ selfUsername }/>} />
+        <Route path="/rooms/:roomId/games/:gameId/result" element={<Result selfUsername={ selfUsername }/>} />
         <Route path="/wtf" element={<WTF />} />
       </Routes>
     </div>

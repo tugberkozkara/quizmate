@@ -51,7 +51,7 @@ export default function Room({ selfUsername }: { selfUsername: string }) {
         socket.on('game-started', (room: any, game: any) => {
             setWaitingForPlayersAlert(false);
             setWaitingForQuestionsAlert(false);
-            navigate(`/game/${game.id}`, { state: { room: room, game: game }});
+            navigate(`/rooms/${room.id}/games/${game.id}`, { state: { room: room, game: game }});
         })
 
     }, [navigate, roomLeftUser, waitingForPlayersAlert]);

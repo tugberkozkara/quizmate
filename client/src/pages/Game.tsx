@@ -40,7 +40,7 @@ export default function Game({ selfUsername }: { selfUsername: string }) {
         })
 
         socket.on('game-finished', (room: any, game: any) => {
-            navigate(`/result/${game.id}`, { state: { room: room, game: game }});
+            navigate(`/rooms/${room.id}/games/${game.id}/result`, { state: { room: room, game: game }});
         })
     }, [navigate])
 
