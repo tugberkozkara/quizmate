@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import {Routes, Route, Navigate} from 'react-router-dom';
+import {Routes, Route} from 'react-router-dom';
+import { RequireAuth } from './components/RequireAuth';
 import Home from './pages/Home';
 import Lobby from './pages/Lobby';
 import Room from './pages/Room';
@@ -15,10 +16,10 @@ function App() {
     <div>
       <Routes>
         <Route path="/" element={<Home selfUsername={ selfUsername } setSelfUsername={setSelfUsername}/>} />
-        <Route path="/lobby" element={<Lobby selfUsername={ selfUsername }/>} />
-        <Route path="/rooms/:roomId" element={<Room selfUsername={ selfUsername }/>} />
-        <Route path="/rooms/:roomId/games/:gameId" element={<Game selfUsername={ selfUsername }/>} />
-        <Route path="/rooms/:roomId/games/:gameId/result" element={<Result selfUsername={ selfUsername }/>} />
+        <Route path="/lobby" element={<RequireAuth selfUsername={selfUsername}><Lobby selfUsername={ selfUsername }/></RequireAuth>} />
+        <Route path="/rooms/:roomId" element={<RequireAuth selfUsername={selfUsername}><Room selfUsername={ selfUsername }/></RequireAuth>} />
+        <Route path="/rooms/:roomId/games/:gameId" element={<RequireAuth selfUsername={selfUsername}><Game selfUsername={ selfUsername }/></RequireAuth>} />
+        <Route path="/rooms/:roomId/games/:gameId/result" element={<RequireAuth selfUsername={selfUsername}><Result selfUsername={ selfUsername }/></RequireAuth>} />
         <Route path="/wtf" element={<WTF />} />
       </Routes>
     </div>
