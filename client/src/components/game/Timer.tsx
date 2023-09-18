@@ -16,10 +16,10 @@ export const Timer = ({timeMax, timeLeft, setTimeLeft}: TimerProps) => {
                 setBarLength(100/(timeMax/(timeLeft-1)));
             }
             if (barLength <= 70 && barLength > 30) {
-                document.getElementById("bar")!.classList.add("bg-warning");
+                document.getElementById("bar")?.classList.add("bg-warning");
             }
             if (barLength <= 30) {
-                document.getElementById("bar")!.classList.replace("bg-warning", "bg-danger");
+                document.getElementById("bar")?.classList.replace("bg-warning", "bg-danger");
             }
 
         }, 1000);

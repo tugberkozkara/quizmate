@@ -20,6 +20,8 @@ export const QuestionCard = ({ question, nextQuestion, selfAnswers, finishGame }
         selfAnswers.push({questionId: question['id'], answer: answer});
         if (!nextQuestion) {
             finishGame(selfAnswers);
+            document.getElementById(`input-answer-${question['id']}`)?.setAttribute("disabled", "true");
+            document.getElementById("finish-button")?.setAttribute("disabled", "true");
         }
     }
 
@@ -31,7 +33,7 @@ export const QuestionCard = ({ question, nextQuestion, selfAnswers, finishGame }
                 <h6 className="card-title text-muted">{question['category']}</h6>
                 <h4 className="card-title">{question['question']}</h4>
                     <div className="input-group mb-3">
-                        <input type="text" className="form-control" placeholder="Answer" name="answer" value={answer} onChange={answerHandle}></input>
+                        <input type="text" id={`input-answer-${question['id']}`} className="form-control" placeholder="Answer" name="answer" value={answer} onChange={answerHandle}></input>
                     </div>
                     {nextQuestion ?
                         <button type="button" id="next-button" className="btn btn-outline-primary" data-bs-target="#carouselExample" data-bs-slide="next" onClick={collectAnswer}>Next Question</button>
